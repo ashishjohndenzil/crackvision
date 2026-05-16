@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrackVision | Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <a class="logo" href="index.html">CrackVision</a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li class="nav-actions">
+                    <a class="nav-button nav-login" id="loginNav" href="login.html">Login</a>
+                    <a class="nav-button nav-register" id="registerNav" href="login.html?mode=register">Register</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="simple-auth-page">
+        <section class="auth-card">
+            <h2 id="title">Login</h2>
+
+            <form id="authForm">
+                <label for="name" id="nameLabel" class="hidden">Name</label>
+                <input type="text" id="name" class="hidden" placeholder="Enter your name">
+
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+
+                <label for="confirmPassword" id="confirmLabel" class="hidden">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="hidden" placeholder="Confirm your password">
+
+                <button type="submit" id="submitBtn" class="primary-button full-width">Login</button>
+                <button type="button" id="toggleBtn" class="secondary-button full-width">Register</button>
+            </form>
+
+            <p id="message"></p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 CrackVision. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const title = document.getElementById('title');
+        const authForm = document.getElementById('authForm');
+        const nameInput = document.getElementById('name');
+        const nameLabel = document.getElementById('nameLabel');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const confirmLabel = document.getElementById('confirmLabel');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const message = document.getElementById('message');
+        const loginNav = document.getElementById('loginNav');
+        const registerNav = document.getElementById('registerNav');
+
+        let mode = 'login';
+
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users') || '[]');
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function setMessage(text, type) {
+            message.textContent = text;
+            message.className = type ? `message-${type}` : '';
+        }
+
+        function setMode(newMode) {
+            mode = newMode;
+            setMessage('', '');
+
+            if (mode === 'register') {
+                title.textContent = 'Register';
+                submitBtn.textContent = 'Register';
+                toggleBtn.textContent = 'Back to Login';
+                loginNav.classList.remove('hidden');
+                registerNav.classList.add('hidden');
+                nameInput.classList.remove('hidden');
+                nameLabel.classList.remove('hidden');
+                confirmPasswordInput.classList.remove('hidden');
+                confirmLabel.classList.remove('hidden');
+                nameInput.required = true;
+                confirmPasswordInput.required = true;
+            } else {
+                title.textContent = 'Login';
+                submitBtn.textContent = 'Login';
+                toggleBtn.textContent = 'Register';
+                loginNav.classList.add('hidden');
+                registerNav.classList.remove('hidden');
+                nameInput.classList.add('hidden');
+                nameLabel.classList.add('hidden');
+                confirmPasswordInput.classList.add('hidden');
+                confirmLabel.classList.add('hidden');
+                nameInput.required = false;
+                confirmPasswordInput.required = false;
+            }
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            setMode(mode === 'login' ? 'register' : 'login');
+            const query = mode === 'register' ? '?mode=register' : '';
+            history.replaceState(null, '', `login.html${query}`);
+        });
+
+        loginNav.addEventListener('click', (event) => {
+            event.preventDefault();
+            setMode('login');
+            authForm.reset();
+            history.replaceState(null, '', 'login.html');
+        });
+
+        registerNav.addEventListener('click', (event) => {
+            event.preventDefault();
+            setMode('register');
+            authForm.reset();
+            history.replaceState(null, '', 'login.html?mode=register');
+        });
+
+        const pageMode = new URLSearchParams(window.location.search).get('mode');
+        setMode(pageMode === 'register' ? 'register' : 'login');
+
+        authForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+            const users = getUsers();
+
+            if (mode === 'register') {
+                const name = nameInput.value.trim();
+                const confirmPassword = confirmPasswordInput.value;
+
+                if (password !== confirmPassword) {
+                    setMessage('Passwords do not match.', 'error');
+                    return;
+                }
+
+                if (users.some(user => user.email === email)) {
+                    setMessage('This email is already registered.', 'error');
+                    return;
+                }
+
+                users.push({ name, email, password });
+                saveUsers(users);
+                authForm.reset();
+                setMode('login');
+                setMessage('Registration successful. Please login.', 'success');
+                return;
+            }
+
+            const foundUser = users.find(user => user.email === email && user.password === password);
+
+            if (!foundUser) {
+                setMessage('Invalid email or password.', 'error');
+                return;
+            }
+
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

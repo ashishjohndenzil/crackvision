@@ -1,0 +1,404 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #1f2933;
+    background: #f6f8fb;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px 8%;
+    background: rgba(255, 255, 255, 0.96);
+    border-bottom: 1px solid #d9e2ec;
+    box-shadow: 0 8px 24px rgba(31, 41, 51, 0.08);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f766e;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+}
+
+.nav-links a {
+    font-weight: 600;
+    color: #334e68;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.nav-links > li > a:hover,
+.nav-links > li > a.active {
+    color: #0f766e;
+}
+
+.nav-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 16px;
+    border: 1px solid #0f766e;
+    border-radius: 8px;
+    color: #0f766e;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-actions .nav-button:hover,
+.nav-actions .nav-button.active {
+    color: #ffffff;
+    background: #0f766e;
+}
+
+.hero {
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    padding: 90px 8%;
+    color: #ffffff;
+    background:
+        linear-gradient(rgba(10, 31, 41, 0.52), rgba(10, 31, 41, 0.52)),
+        url("https://cdn.pixabay.com/photo/2018/08/12/03/03/concrete-3600001_1280.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-content {
+    max-width: 650px;
+}
+
+.eyebrow {
+    margin-bottom: 10px;
+    color: #0f766e;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.hero .eyebrow {
+    color: #9ff5e5;
+}
+
+h1 {
+    font-size: 48px;
+    line-height: 1.15;
+    margin-bottom: 18px;
+}
+
+h2 {
+    font-size: 30px;
+    line-height: 1.25;
+    color: #102a43;
+}
+
+h3 {
+    color: #102a43;
+    margin-bottom: 10px;
+}
+
+.hero p,
+.section-heading p,
+.feature-card p,
+.contact-strip p {
+    color: #52606d;
+    font-size: 17px;
+}
+
+.hero p {
+    max-width: 580px;
+    color: #e6f6ff;
+}
+
+.primary-button,
+.secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 22px;
+    padding: 11px 18px;
+    border-radius: 8px;
+    border: 1px solid #0f766e;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.primary-button {
+    color: #ffffff;
+    background: #0f766e;
+}
+
+.primary-button:hover {
+    background: #115e59;
+}
+
+.secondary-button {
+    color: #0f766e;
+    background: #ffffff;
+}
+
+.secondary-button:hover {
+    background: #ecfeff;
+}
+
+.page-section {
+    padding: 62px 8%;
+}
+
+.page-section.muted {
+    background: #eef4f7;
+}
+
+.section-heading {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.section-heading h2 {
+    margin-bottom: 12px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.feature-card,
+.auth-card {
+    background: #ffffff;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    box-shadow: 0 10px 28px rgba(31, 41, 51, 0.08);
+}
+
+.feature-card {
+    padding: 26px;
+}
+
+.contact-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px;
+    background: #ffffff;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+}
+
+.contact-strip .secondary-button {
+    flex: 0 0 auto;
+    margin-top: 0;
+}
+
+.upload-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+    align-items: center;
+    gap: 36px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.upload-layout h2 {
+    margin-bottom: 12px;
+}
+
+.upload-layout p,
+.upload-box p {
+    color: #52606d;
+    font-size: 17px;
+}
+
+.upload-box {
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    box-shadow: 0 10px 28px rgba(31, 41, 51, 0.08);
+}
+
+.upload-box input {
+    margin-bottom: 4px;
+}
+
+.simple-auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 154px);
+    padding: 54px 8%;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 390px;
+    padding: 30px;
+}
+
+.auth-card h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin: 14px 0 7px;
+    color: #334e68;
+    font-weight: 700;
+}
+
+input {
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 13px;
+    border: 1px solid #bcccdc;
+    border-radius: 8px;
+    color: #102a43;
+    font: inherit;
+    background: #ffffff;
+}
+
+input:focus {
+    outline: 3px solid rgba(15, 118, 110, 0.18);
+    border-color: #0f766e;
+}
+
+.full-width {
+    width: 100%;
+}
+
+button.full-width + button.full-width {
+    margin-top: 12px;
+}
+
+#message {
+    min-height: 24px;
+    margin-top: 16px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.message-success {
+    color: #0f766e;
+}
+
+.message-error {
+    color: #b42318;
+}
+
+.hidden {
+    display: none;
+}
+
+.site-footer {
+    padding: 24px 8%;
+    color: #52606d;
+    text-align: center;
+    background: #ffffff;
+    border-top: 1px solid #d9e2ec;
+}
+
+@media (max-width: 840px) {
+    .site-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 14px 18px;
+    }
+
+    .nav-actions {
+        width: 100%;
+    }
+
+    .hero {
+        min-height: 420px;
+        padding: 64px 7%;
+    }
+
+    h1 {
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 26px;
+    }
+
+    .feature-grid,
+    .upload-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-strip {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 520px) {
+    .nav-links {
+        width: 100%;
+    }
+
+    .nav-actions,
+    .nav-button {
+        width: 100%;
+    }
+
+    .hero,
+    .page-section,
+    .simple-auth-page {
+        padding-left: 6%;
+        padding-right: 6%;
+    }
+
+    .auth-card,
+    .contact-strip,
+    .upload-box,
+    .feature-card {
+        padding: 22px;
+    }
+}
