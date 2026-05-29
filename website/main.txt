@@ -1,0 +1,10 @@
+with sql.connect("crackvision.db") as con:
+            cur = con.cursor()
+            cur.execute("INSERT INTO users (name,email,phone,age,gender,pincode,address,password) VALUES (?,?,?,?,?,?,?,?)", 
+                        (name, email, phone, age, gender, pincode, address, password))
+            con.commit()
+
+
+            1 admin 
+            2 user 
+            3 engineer

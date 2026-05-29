@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block content %}
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">Premier Construction</div>
+            <h1>Building with <br><span>Excellence.</span></h1>
+            <p>We deliver innovative engineering, sustainable practices, and absolute precision to create commercial and residential spaces that stand the test of time.</p>
+            <a href="#projects" class="btn btn-register" style="padding: 14px 28px;">View Our Work</a>
+        </div>
+
+        <div class="hero-slider-wrapper">
+            <div class="slide active">
+               <img src="https://images.unsplash.com/photo-1508450859948-4e04fabaa4ea?auto=format&fit=crop&w=800&q=80" alt="Construction Crane" class="project-img">
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80" alt="Building Architecture">
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Skyscraper View">
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80" alt="Engineering Project">
+            </div>
+
+            <button class="slider-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="slider-btn next" onclick="changeSlide(1)">&#10095;</button>
+
+            <div class="slider-dots">
+                <span class="dot active" onclick="goToSlide(0)"></span>
+                <span class="dot" onclick="goToSlide(1)"></span>
+                <span class="dot" onclick="goToSlide(2)"></span>
+                <span class="dot" onclick="goToSlide(3)"></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about-grid">
+            <div class="about-text reveal">
+                <h2>Precision & <br><span>Quality.</span></h2>
+                <p>Nexus is a full-service construction and engineering firm dedicated to transforming complex blueprints into highly functional, breathtaking spaces.</p>
+                <p>By blending modern architectural design with rigorous safety standards and advanced building materials, our team ensures that every project is delivered flawlessly, on time, and within scope.</p>
+            </div>
+            <div class="reveal">
+                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80" alt="Construction Development" class="about-image">
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="section-header reveal">
+            <h2 class="section-title">Featured <span>Projects.</span></h2>
+            <p class="section-subtitle">Explore a selection of our most recent commercial and residential developments.</p>
+        </div>
+
+        <div class="project-grid">
+            <div class="project-card reveal">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80" alt="Commercial Building" class="project-img">
+                <div class="project-overlay">
+                    <h3>The Meridian Center</h3>
+                    <p>Commercial Office</p>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <img src="https://images.unsplash.com/photo-1508450859948-4e04fabaa4ea?auto=format&fit=crop&w=800&q=80" alt="Industrial Logistics" class="project-img">
+                <div class="project-overlay">
+                    <h3>Westlake Logistics</h3>
+                    <p>Industrial Facility</p>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80" alt="Infrastructure" class="project-img">
+                <div class="project-overlay">
+                    <h3>Valley Infrastructure</h3>
+                    <p>Civil Engineering</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="section-header reveal">
+            <h2 class="section-title">Start Your <span>Project.</span></h2>
+            <p class="section-subtitle">Contact our team of experts today to discuss your next build.</p>
+        </div>
+        
+        <div class="contact-container reveal">
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label>Full Name or Company</label>
+                    <input type="text" class="form-control" placeholder="e.g. John Doe / Acme Corp" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" class="form-control" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Project Details</label>
+                    <textarea class="form-control" placeholder="Briefly describe your project requirements..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    {% endblock %}

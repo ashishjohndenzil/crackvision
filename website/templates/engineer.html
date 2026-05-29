@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrackVision | Engineer Dashboard</title>
+    <!-- Stylesheets & Icons fallback for local manual previews -->
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-zinc-800 selection:text-white overflow-x-hidden">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="logo" href="index.html" aria-label="CrackVision home">
+            <span class="logo-text">CrackVision</span>
+        </a>
+        <nav aria-label="Main navigation">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a class="active" href="engineer.html">Engineer Dashboard</a></li>
+                <li class="nav-actions" id="navActions">
+                    <button type="button" class="nav-button button-link" id="engineerLogoutBtn">Logout</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-page">
+        <section class="admin-dashboard">
+            <div class="admin-header">
+                <div>
+                    <p class="eyebrow">Engineer Dashboard</p>
+                    <h1 id="engineerName">Engineer Workspace</h1>
+                    <p>Prepare dynamic inspections, analyze concrete cracks, and view engineering logs.</p>
+                </div>
+                <a class="secondary-button" href="index.html#projects">View Public Portfolio</a>
+            </div>
+
+            <div class="engineer-summary">
+                <article>
+                    <span>Employee ID</span>
+                    <strong id="employeeId">ENG-001</strong>
+                </article>
+                <article>
+                    <span>Department</span>
+                    <strong id="department">Structural Inspection</strong>
+                </article>
+                <article>
+                    <span>Designation</span>
+                    <strong id="designation">Site Engineer</strong>
+                </article>
+            </div>
+
+            <div class="admin-layout engineer-layout">
+                <!-- Sidebar Active Projects -->
+                <section class="admin-panel">
+                    <h2>Active Projects</h2>
+                    <div class="engineer-list" id="engineerProjectsList">
+                        <!-- Loaded dynamically -->
+                        <div class="empty-state">Loading active projects...</div>
+                    </div>
+                </section>
+
+                <!-- Dynamic Inspection Form -->
+                <section class="admin-panel">
+                    <h2>New Crack Inspection</h2>
+                    <form id="engineerReportForm" class="engineer-form">
+                        <div class="form-field">
+                            <label for="reportProject">Target Project</label>
+                            <select id="reportProject" required>
+                                <option value="">Select active project</option>
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="inspectionImage">Concrete Surface Photo</label>
+                            <input type="file" id="inspectionImage" accept="image/*" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="inspectionNotes">Inspection Notes & Details</label>
+                            <textarea id="inspectionNotes" rows="3" placeholder="Add engineering remarks about columns, beams, or slabs..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="primary-button full-width">Analyze & Log Inspection</button>
+                    </form>
+                    <p id="engineerReportMessage" aria-live="polite" style="margin-top: 10px; font-weight: 700; text-align: center; color: #0f766e;"></p>
+
+                    <!-- Real-Time Inspection Result Card -->
+                    <div id="engineerReportResult" class="auth-card" style="display: none; margin-top: 20px; border-color: #0f766e; padding: 20px; background: rgba(255, 255, 255, 0.95);">
+                        <h3 style="color: #0f766e; border-bottom: 2px solid #ccfbf1; padding-bottom: 6px; margin-bottom: 12px; font-size: 16px;">
+                            <i class="fa-solid fa-square-poll-vertical" style="margin-right: 8px;"></i>Live Model Inference
+                        </h3>
+                        <dl style="display: grid; gap: 8px; font-size: 14px; margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between;"><dt style="color: #52606d; font-weight: 700;">Result:</dt><dd id="resLabel" style="font-weight: 800; color: #ef4444;"></dd></div>
+                            <div style="display: flex; justify-content: space-between;"><dt style="color: #52606d; font-weight: 700;">Confidence:</dt><dd id="resConfidence" style="font-weight: 800; color: #102a43;"></dd></div>
+                            <div style="display: flex; justify-content: space-between;"><dt style="color: #52606d; font-weight: 700;">Estimated Crack Depth:</dt><dd id="resDepth" style="font-weight: 800; color: #102a43;"></dd></div>
+                        </dl>
+                        <div style="height: 140px; border-radius: 8px; overflow: hidden; background: #e2e8f0; border: 1px solid #d9e2ec;">
+                            <img id="resImg" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Crack Highlight">
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Interactive Prediction Logs Grid -->
+            <section class="admin-panel" style="margin-top: 30px;">
+                <h2>Historical Inspection Logs</h2>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; margin-top: 15px;">
+                        <thead>
+                            <tr style="background: #eef6f5; color: #0b5f59; font-weight: 700; border-bottom: 2px solid #9ad6cf;">
+                                <th style="padding: 12px;">Date & Time</th>
+                                <th style="padding: 12px;">Inference Result</th>
+                                <th style="padding: 12px;">Confidence Score</th>
+                                <th style="padding: 12px;">Average Depth</th>
+                                <th style="padding: 12px; text-align: center;">Visual Log</th>
+                            </tr>
+                        </thead>
+                        <tbody id="engineerLogsTable">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 CrackVision. All rights reserved.</p>
+    </footer>
+
+    <!-- Global scripts and libraries -->
+    <script src="../static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+        if (!currentUser || currentUser.role !== 'engineer') {
+            window.location.href = 'login.html';
+        }
+
+        // Render Engineer Profile Info
+        document.getElementById('engineerName').textContent = currentUser ? `${currentUser.name} Workspace` : 'Engineer Workspace';
+        document.getElementById('employeeId').textContent = currentUser?.employeeId || 'ENG-001';
+        document.getElementById('department').textContent = currentUser?.department || 'Structural Inspection';
+        document.getElementById('designation').textContent = currentUser?.designation || 'Site Engineer';
+
+        const reportProject = document.getElementById('reportProject');
+        const engineerProjectsList = document.getElementById('engineerProjectsList');
+        const engineerReportForm = document.getElementById('engineerReportForm');
+        const inspectionImage = document.getElementById('inspectionImage');
+        const inspectionNotes = document.getElementById('inspectionNotes');
+        const engineerReportMessage = document.getElementById('engineerReportMessage');
+        const engineerLogsTable = document.getElementById('engineerLogsTable');
+
+        // Logout listener
+        const engineerLogoutBtn = document.getElementById('engineerLogoutBtn');
+        if (engineerLogoutBtn) {
+            engineerLogoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            });
+        }
+
+        // Load Active Projects
+        function loadEngineerWorkspace() {
+            fetch('/api/projects')
+            .then(res => res.json())
+            .then(projects => {
+                if (!projects.length) {
+                    engineerProjectsList.innerHTML = '<div class="empty-state">No active projects found.</div>';
+                    return;
+                }
+
+                // Render Sidebar List
+                engineerProjectsList.innerHTML = projects.map(proj => {
+                    const statusClass = proj.status ? proj.status.toLowerCase() : 'ongoing';
+                    return `
+                    <article class="engineer-card" style="padding: 15px; margin-bottom: 12px;">
+                        <div class="engineer-card-top" style="margin-bottom: 8px;">
+                            <div>
+                                <h3 style="font-size: 15px;">${proj.pname}</h3>
+                                <p style="font-size: 12px; color: #627d98;">${proj.ptype}</p>
+                            </div>
+                            <span class="status-badge ${statusClass}">${proj.status}</span>
+                        </div>
+                        <dl class="engineer-details" style="grid-template-columns: 1fr; font-size: 12px;">
+                            <div><dt>Location</dt><dd style="font-weight: 700;">${proj.location}</dd></div>
+                            <div><dt>Duration</dt><dd style="font-weight: 700;">${proj.duration}</dd></div>
+                        </dl>
+                    </article>
+                    `;
+                }).join('');
+
+                // Render Select Dropdown Options
+                reportProject.innerHTML = '<option value="">Select active project</option>' + 
+                    projects.map(proj => `<option value="${proj.pname}">${proj.pname}</option>`).join('');
+            })
+            .catch(err => console.error(err));
+
+            loadHistoricalLogs();
+        }
+
+        // Load predictions history from backend
+        function loadHistoricalLogs() {
+            if (!currentUser) return;
+            fetch(`/api/predictions?userid=${currentUser.id}`)
+            .then(res => res.json())
+            .then(logs => {
+                if (!logs.length) {
+                    engineerLogsTable.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #627d98; font-style: italic;">No historical inspections recorded.</td></tr>';
+                    return;
+                }
+
+                engineerLogsTable.innerHTML = logs.map(log => {
+                    const resultStyle = log.pred_result === 'Crack Detected' ? 'color: #ef4444; font-weight: 800;' : 'color: #10b981; font-weight: 800;';
+                    return `
+                    <tr style="border-bottom: 1px solid #e6edf3;">
+                        <td style="padding: 12px; color: #102a43; font-weight: 700;">${log.date_time}</td>
+                        <td style="padding: 12px; ${resultStyle}">${log.pred_result}</td>
+                        <td style="padding: 12px; font-weight: 700;">${Math.round(log.confidence * 100)}%</td>
+                        <td style="padding: 12px; font-weight: 700;">${log.avg_depths}</td>
+                        <td style="padding: 12px; text-align: center;">
+                            <a href="${log.pred_image}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: #e0f2fe; border-radius: 8px; color: #0284c7; font-size: 15px; border: 1px solid #bae6fd;">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    `;
+                }).join('');
+            })
+            .catch(err => console.error(err));
+        }
+
+        // Handle Report Submission and live model inference
+        engineerReportForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (!inspectionImage.files.length) {
+                engineerReportMessage.textContent = 'Please choose an inspection image.';
+                return;
+            }
+
+            engineerReportMessage.textContent = 'Uploading and analyzing surface...';
+
+            const formData = new FormData();
+            formData.append('inspectionImage', inspectionImage.files[0]);
+            formData.append('userid', currentUser.id);
+
+            fetch('/api/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    engineerReportMessage.textContent = 'Inspection report successfully logged!';
+                    
+                    // Reset fields except Project
+                    inspectionImage.value = '';
+                    inspectionNotes.value = '';
+
+                    const pred = data.prediction;
+                    document.getElementById('resLabel').textContent = pred.pred_result;
+                    document.getElementById('resConfidence').textContent = `${Math.round(pred.confidence * 100)}%`;
+                    document.getElementById('resDepth').textContent = pred.avg_depths;
+                    document.getElementById('resImg').src = pred.pred_image;
+
+                    const labelEl = document.getElementById('resLabel');
+                    if (pred.pred_result === 'Crack Detected') {
+                        labelEl.style.color = '#ef4444';
+                    } else {
+                        labelEl.style.color = '#10b981';
+                    }
+
+                    document.getElementById('engineerReportResult').style.display = 'block';
+                    
+                    // Reload table records
+                    loadHistoricalLogs();
+                } else {
+                    engineerReportMessage.textContent = data.message;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                engineerReportMessage.textContent = 'Submission error occurred.';
+            });
+        });
+
+        if (typeof updateLoginState === 'function') {
+            updateLoginState();
+        }
+        loadEngineerWorkspace();
+    </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrackVision | Login</title>
+    <!-- Stylesheets & Icons fallback for local manual previews -->
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-zinc-800 selection:text-white overflow-x-hidden">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="logo" href="index.html" aria-label="CrackVision home">
+            <span class="logo-text">CrackVision</span>
+        </a>
+        <nav aria-label="Main navigation">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li class="nav-actions" id="navActions">
+                    <a class="nav-button nav-login active" href="login.html">Login</a>
+                    <a class="nav-button nav-register" href="register.html">Register</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="simple-auth-page">
+        <section class="auth-card" id="authCard">
+            <h2 id="title">Login</h2>
+
+            <form id="authForm" class="auth-form">
+                <div class="form-field">
+                    <label for="email">Username or Email</label>
+                    <input type="text" id="email" placeholder="Enter username or email" autocomplete="username" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password"
+                        autocomplete="current-password" minlength="6" required>
+                </div>
+
+                <button type="submit" id="submitBtn" class="primary-button full-width">Login</button>
+                <a href="register.html" id="toggleBtn" class="secondary-button full-width">Register</a>
+            </form>
+
+            <p id="message" aria-live="polite" style="margin-top: 10px; font-weight: 700; text-align: center; color: #627d98;"></p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 CrackVision. All rights reserved.</p>
+    </footer>
+
+    <!-- Global scripts and libraries -->
+    <script src="../static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const authForm = document.getElementById('authForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const message = document.getElementById('message');
+
+        function setMessage(text, type) {
+            message.textContent = text;
+            message.className = type ? `message-${type}` : '';
+            if (type === 'success') {
+                message.style.color = '#0f766e';
+            } else if (type === 'error') {
+                message.style.color = '#ef4444';
+            } else {
+                message.style.color = '#627d98';
+            }
+        }
+
+        authForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+
+            setMessage('Logging in...', 'info');
+
+            fetch('/login_db', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(err => { throw new Error(err.message || 'Invalid username/email or password.'); });
+                }
+            })
+            .then(data => {
+                const foundUser = data.user;
+                if (foundUser.role === 'admin') {
+                    localStorage.removeItem('currentUser');
+                    localStorage.setItem('currentAdmin', JSON.stringify({ email: foundUser.email, role: 'admin' }));
+                    window.location.href = 'admin.html';
+                } else {
+                    localStorage.removeItem('currentAdmin');
+                    localStorage.setItem('currentUser', JSON.stringify(foundUser));
+                    
+                    if (foundUser.role === 'engineer') {
+                        window.location.href = 'engineer.html';
+                    } else {
+                        window.location.href = 'user.html';
+                    }
+                }
+            })
+            .catch(err => {
+                setMessage(err.message, 'error');
+            });
+        });
+
+        if (typeof updateLoginState === 'function') {
+            updateLoginState();
+        }
+    </script>
+</body>
+</html>

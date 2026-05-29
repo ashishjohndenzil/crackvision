@@ -1,0 +1,13 @@
+<!-- Local Custom Script (Jinja + Root-Relative + Relative fallback for manual local preview) -->
+{% if url_for %}
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+{% else %}
+<script src="/static/script.js"></script>
+<script src="../static/script.js"></script>
+{% endif %}
+
+<!-- SweetAlert2 for premium popup alerts and confirmations -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Chart.js for dynamic dashboard charts and visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

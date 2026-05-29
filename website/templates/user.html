@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrackVision | User Dashboard</title>
+    <!-- Stylesheets & Icons fallback for local manual previews -->
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-zinc-800 selection:text-white overflow-x-hidden">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="logo" href="index.html" aria-label="CrackVision home">
+            <span class="logo-text">CrackVision</span>
+        </a>
+        <nav aria-label="Main navigation">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a class="active" href="user.html">User Dashboard</a></li>
+                <li class="nav-actions" id="navActions">
+                    <button type="button" class="nav-button button-link logout-button">Logout</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-page">
+        <section class="admin-dashboard">
+            <div class="admin-header">
+                <div>
+                    <p class="eyebrow">User Space</p>
+                    <h1 id="userDashboardName">My Workspace</h1>
+                    <p>Manage your structural review submissions, view your inspection logs, and update credentials.</p>
+                </div>
+                <a class="secondary-button" href="index.html">Explore Projects Portfolio</a>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="engineer-summary" style="margin-bottom: 25px;">
+                <article>
+                    <span>Reviews Submitted</span>
+                    <strong id="userReviewsCount">0 Reviews</strong>
+                </article>
+                <article>
+                    <span>Inspections Run</span>
+                    <strong id="userInspectionsCount">0 Logs</strong>
+                </article>
+                <article>
+                    <span>Profile Role</span>
+                    <strong style="color: #0f766e;">Authorized Client</strong>
+                </article>
+            </div>
+
+            <div class="admin-layout" style="grid-template-columns: minmax(320px, 420px) minmax(0, 1fr); gap: 24px;">
+                <!-- Profile Details Sidebar Card -->
+                <section class="admin-panel">
+                    <h2 style="border-bottom: 2px solid #eef6f5; padding-bottom: 8px; margin-bottom: 15px;">
+                        <i class="fa-solid fa-id-card" style="margin-right: 8px; color: #0f766e;"></i>My Profile Details
+                    </h2>
+                    <dl class="engineer-details" style="grid-template-columns: 1fr; gap: 14px;">
+                        <div>
+                            <dt style="color: #627d98; font-size: 13px; font-weight: 700;">Full Name</dt>
+                            <dd id="profileName" style="color: #102a43; font-weight: 700; font-size: 15px;"></dd>
+                        </div>
+                        <div>
+                            <dt style="color: #627d98; font-size: 13px; font-weight: 700;">Username</dt>
+                            <dd id="profileUsername" style="color: #102a43; font-weight: 700; font-size: 15px;"></dd>
+                        </div>
+                        <div>
+                            <dt style="color: #627d98; font-size: 13px; font-weight: 700;">Email Address</dt>
+                            <dd id="profileEmail" style="color: #102a43; font-weight: 700; font-size: 14px; overflow-wrap: anywhere;"></dd>
+                        </div>
+                        <div>
+                            <dt style="color: #627d98; font-size: 13px; font-weight: 700;">Contact Phone</dt>
+                            <dd id="profilePhone" style="color: #102a43; font-weight: 700; font-size: 15px;"></dd>
+                        </div>
+                        <div>
+                            <dt style="color: #627d98; font-size: 13px; font-weight: 700;">Date of Birth</dt>
+                            <dd id="profileDob" style="color: #102a43; font-weight: 700; font-size: 15px;"></dd>
+                        </div>
+                        <div>
+                            <dt style="color: #627d98; font-size: 13px; font-weight: 700;">Gender</dt>
+                            <dd id="profileGender" style="color: #102a43; font-weight: 700; font-size: 15px;"></dd>
+                        </div>
+                        <div>
+                            <dt style="color: #627d98; font-size: 13px; font-weight: 700;">Residential Address</dt>
+                            <dd id="profileAddress" style="color: #102a43; font-weight: 700; font-size: 14.5px; line-height: 1.4;"></dd>
+                        </div>
+                    </dl>
+                </section>
+
+                <!-- Tabs Area (Inspections & Reviews) -->
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    <!-- My Review Contributions -->
+                    <section class="admin-panel">
+                        <h2 style="border-bottom: 2px solid #eef6f5; padding-bottom: 8px; margin-bottom: 15px;">
+                            <i class="fa-solid fa-comments" style="margin-right: 8px; color: #0f766e;"></i>My Project Reviews & Feedback
+                        </h2>
+                        <div id="userReviewsList" style="display: grid; gap: 15px;">
+                            <div class="empty-state">Loading your review history...</div>
+                        </div>
+                    </section>
+
+                    <!-- My Image Inspections -->
+                    <section class="admin-panel">
+                        <h2 style="border-bottom: 2px solid #eef6f5; padding-bottom: 8px; margin-bottom: 15px;">
+                            <i class="fa-solid fa-microscope" style="margin-right: 8px; color: #0f766e;"></i>My Concrete Surface Inspections
+                        </h2>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; margin-top: 10px;">
+                                <thead>
+                                    <tr style="background: #eef6f5; color: #0b5f59; font-weight: 700; border-bottom: 2px solid #9ad6cf;">
+                                        <th style="padding: 12px;">Date & Time</th>
+                                        <th style="padding: 12px;">Model Result</th>
+                                        <th style="padding: 12px;">Confidence Score</th>
+                                        <th style="padding: 12px;">Average Depth</th>
+                                        <th style="padding: 12px; text-align: center;">Visual Log</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userInspectionsTable">
+                                    <!-- Loaded dynamically -->
+                                    <tr><td colspan="5" style="text-align: center; padding: 15px; color: #627d98;">Loading inspections logs...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 CrackVision. All rights reserved.</p>
+    </footer>
+
+    <!-- Global scripts and libraries -->
+    <script src="../static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+        // Protect route: Redirect to login if user role isn't 'user'
+        if (!currentUser || currentUser.role !== 'user') {
+            window.location.href = 'login.html';
+        }
+
+        // Render profile variables
+        document.getElementById('userDashboardName').textContent = `${currentUser.name} Workspace`;
+        document.getElementById('profileName').textContent = currentUser.name || 'N/A';
+        document.getElementById('profileUsername').textContent = currentUser.username || 'N/A';
+        document.getElementById('profileEmail').textContent = currentUser.email || 'N/A';
+        document.getElementById('profilePhone').textContent = currentUser.phone || 'N/A';
+        document.getElementById('profileDob').textContent = currentUser.dob || 'N/A';
+        document.getElementById('profileGender').textContent = currentUser.gender || 'N/A';
+        document.getElementById('profileAddress').textContent = currentUser.address || 'N/A';
+
+        const userReviewsList = document.getElementById('userReviewsList');
+        const userInspectionsTable = document.getElementById('userInspectionsTable');
+        const userReviewsCount = document.getElementById('userReviewsCount');
+        const userInspectionsCount = document.getElementById('userInspectionsCount');
+
+        function loadUserDashboard() {
+            if (!currentUser) return;
+
+            // 1. Fetch user specific reviews from backend
+            fetch(`/api/user_reviews?user_id=${currentUser.id}`)
+            .then(res => res.json())
+            .then(reviews => {
+                userReviewsCount.textContent = `${reviews.length} Review${reviews.length === 1 ? '' : 's'}`;
+                
+                if (!reviews.length) {
+                    userReviewsList.innerHTML = '<p class="empty-state">You have not submitted any reviews yet.</p>';
+                    return;
+                }
+
+                userReviewsList.innerHTML = reviews.map(rev => `
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; padding-bottom: 6px; margin-bottom: 4px;">
+                        <strong style="color: #0b5f59; font-size: 14.5px;"><i class="fa-solid fa-building" style="margin-right: 6px;"></i>${rev.project_name}</strong>
+                        <span style="font-size: 11.5px; color: #94a3b8;"><i class="fa-solid fa-clock" style="margin-right: 4px;"></i>${rev.date_time}</span>
+                    </div>
+                    <p style="font-size: 13.5px; color: #334155; line-height: 1.5; font-style: italic;">"${rev.review_text}"</p>
+                </div>
+                `).join('');
+            })
+            .catch(err => {
+                console.error(err);
+                userReviewsList.innerHTML = '<p class="empty-state" style="color: #ef4444;">Failed to load reviews history.</p>';
+            });
+
+            // 2. Fetch user surface inspections (predictions)
+            fetch(`/api/predictions?userid=${currentUser.id}`)
+            .then(res => res.json())
+            .then(logs => {
+                userInspectionsCount.textContent = `${logs.length} Log${logs.length === 1 ? '' : 's'}`;
+
+                if (!logs.length) {
+                    userInspectionsTable.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #627d98; font-style: italic;">No concrete surface crack inspections run yet.</td></tr>';
+                    return;
+                }
+
+                userInspectionsTable.innerHTML = logs.map(log => {
+                    const resultStyle = log.pred_result === 'Crack Detected' ? 'color: #ef4444; font-weight: 800;' : 'color: #10b981; font-weight: 800;';
+                    return `
+                    <tr style="border-bottom: 1px solid #e6edf3;">
+                        <td style="padding: 12px; color: #102a43; font-weight: 700;">${log.date_time}</td>
+                        <td style="padding: 12px; ${resultStyle}">${log.pred_result}</td>
+                        <td style="padding: 12px; font-weight: 700;">${Math.round(log.confidence * 100)}%</td>
+                        <td style="padding: 12px; font-weight: 700;">${log.avg_depths}</td>
+                        <td style="padding: 12px; text-align: center;">
+                            <a href="${log.pred_image}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: #e0f2fe; border-radius: 8px; color: #0284c7; font-size: 15px; border: 1px solid #bae6fd;">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    `;
+                }).join('');
+            })
+            .catch(err => {
+                console.error(err);
+                userInspectionsTable.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 15px; color: #ef4444;">Failed to load dynamic inspection logs.</td></tr>';
+            });
+        }
+
+        if (typeof updateLoginState === 'function') {
+            updateLoginState();
+        }
+        loadUserDashboard();
+    </script>
+</body>
+</html>

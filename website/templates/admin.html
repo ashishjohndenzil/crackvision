@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrackVision | Admin</title>
+    <!-- Stylesheets & Icons fallback for local manual previews -->
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hidden {
+            display: none !important;
+        }
+        .tab-button {
+            opacity: 0.8;
+        }
+        .tab-button:hover {
+            opacity: 1 !important;
+            transform: translateY(-1px);
+        }
+        .project-row:hover {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-zinc-800 selection:text-white overflow-x-hidden">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="logo" href="index.html" aria-label="CrackVision home">
+            <span class="logo-text">CrackVision</span>
+        </a>
+        <nav aria-label="Main navigation">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a class="active" href="admin.html">Admin Dashboard</a></li>
+                <li class="nav-actions" id="navActions">
+                    <button type="button" class="nav-button button-link" id="topAdminLogoutBtn">Logout</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-page">
+        <section class="admin-dashboard" id="adminDashboard">
+            <div class="admin-header">
+                <div>
+                    <p class="eyebrow">Admin Dashboard</p>
+                    <h1 id="dashboardTitle">Engineer Management</h1>
+                    <p id="dashboardSubtitle">Register new engineers, view active credentials, and manage authorizations.</p>
+                </div>
+                <button type="button" class="secondary-button" id="adminLogoutBtn">Logout</button>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="tab-navigation" style="display: flex; gap: 12px; margin-bottom: 25px; border-bottom: 2px solid #eef6f5; padding-bottom: 12px;">
+                <button type="button" class="tab-button" id="tabEngineers" style="background: #0f766e; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+                    <i class="fa-solid fa-user-gear"></i> Engineers Management
+                </button>
+                <button type="button" class="tab-button" id="tabProjects" style="background: transparent; color: #52606d; border: 1px solid #d9e2ec; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+                    <i class="fa-solid fa-building-shield"></i> Projects Management
+                </button>
+            </div>
+
+            <!-- Engineers Section -->
+            <div id="engineersSection" class="admin-layout">
+                <!-- Add Engineer Form -->
+                <section class="admin-panel">
+                    <h2>Add Engineer</h2>
+                    <form id="engineerForm" class="engineer-form">
+                        <div class="form-field">
+                            <label for="engineerName">Full Name</label>
+                            <input type="text" id="engineerName" placeholder="Enter full name" autocomplete="name" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="engineerUsername">Username</label>
+                            <input type="text" id="engineerUsername" placeholder="Choose username" autocomplete="username" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="engineerEmail">Email</label>
+                            <input type="email" id="engineerEmail" placeholder="Enter email" autocomplete="email" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="engineerPhone">Phone Number</label>
+                            <input type="tel" id="engineerPhone" placeholder="10 digit phone number" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" autocomplete="tel" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="engineerDob">Date of Birth</label>
+                            <input type="date" id="engineerDob" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="engineerGender">Gender</label>
+                            <select id="engineerGender" required>
+                                <option value="">Select gender</option>
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-field wide-field">
+                            <label for="engineerAddress">Address</label>
+                            <textarea id="engineerAddress" placeholder="Enter residential address" rows="2" required></textarea>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="engineerPassword">Password</label>
+                            <input type="password" id="engineerPassword" placeholder="Create password" minlength="6" autocomplete="new-password" required>
+                        </div>
+
+                        <button type="submit" class="primary-button full-width">Add Engineer</button>
+                    </form>
+
+                    <p id="engineerMessage" aria-live="polite" style="margin-top: 10px; font-weight: 700; text-align: center; color: #0f766e;"></p>
+                </section>
+
+                <!-- Engineer Details List -->
+                <section class="admin-panel engineers-section">
+                    <div class="panel-title-row">
+                        <div>
+                            <p class="eyebrow">Engineers</p>
+                            <h2>Active Engineer Details</h2>
+                        </div>
+                        <span class="engineer-count" id="engineerCount">0 engineers</span>
+                    </div>
+
+                    <div class="engineer-list" id="engineerList">
+                        <!-- Loaded dynamically -->
+                        <div class="empty-state">Loading active engineers...</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Projects Section (Hidden by default) -->
+            <div id="projectsSection" class="admin-layout hidden" style="grid-template-columns: minmax(320px, 450px) minmax(0, 1fr); gap: 24px;">
+                <!-- Add Project Form -->
+                <section class="admin-panel">
+                    <h2>Add Project</h2>
+                    <form id="projectForm" class="engineer-form" enctype="multipart/form-data">
+                        <div class="form-field">
+                            <label for="projectCategory">Project Category (list) dropdown</label>
+                            <select id="projectCategory" required>
+                                <option value="">Select category</option>
+                                <option value="Commercial Complex">Commercial Complex</option>
+                                <option value="Residential Building">Residential Building</option>
+                                <option value="Structural Repair">Structural Repair</option>
+                                <option value="Industrial Facility">Industrial Facility</option>
+                                <option value="Infrastructure Rehabilitation">Infrastructure Rehabilitation</option>
+                                <option value="Bridge Construction">Bridge Construction</option>
+                            </select>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectName">Project Name</label>
+                            <input type="text" id="projectName" placeholder="Enter project name" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectType">Project Type</label>
+                            <input type="text" id="projectType" placeholder="e.g. Commercial Construction" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectDuration">Duration</label>
+                            <input type="text" id="projectDuration" placeholder="e.g. 24 Months" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectArea">Area</label>
+                            <input type="text" id="projectArea" placeholder="e.g. 45,000 sq ft" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectClient">Client</label>
+                            <input type="text" id="projectClient" placeholder="Enter client name" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectHeight">Building Height</label>
+                            <input type="text" id="projectHeight" placeholder="e.g. 85 meters (20 Floors)" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectFoundation">Foundation Type</label>
+                            <input type="text" id="projectFoundation" placeholder="e.g. Pile Foundation" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectParking">Parking Space</label>
+                            <input type="text" id="projectParking" placeholder="e.g. 6.0 meters" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectEnergy">Energy Rating</label>
+                            <input type="text" id="projectEnergy" placeholder="e.g. A++ / N/A" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectLocation">Location</label>
+                            <input type="text" id="projectLocation" placeholder="e.g. Kochi, Kerala" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="projectStatus">Project Status</label>
+                            <select id="projectStatus" required>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Upcoming">Upcoming</option>
+                            </select>
+                        </div>
+
+                        <div class="form-field wide-field">
+                            <label for="projectImage">Project Picture (Optional)</label>
+                            <input type="file" id="projectImage" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #bcccdc; border-radius: 8px;">
+                        </div>
+
+                        <div class="form-field wide-field">
+                            <label for="projectSdesc">Short Description</label>
+                            <input type="text" id="projectSdesc" placeholder="One sentence summary..." required>
+                        </div>
+
+                        <div class="form-field wide-field">
+                            <label for="projectLog">Project Log / Description</label>
+                            <textarea id="projectLog" placeholder="Detailed structural work logs, safety reviews, inspections..." rows="3" required></textarea>
+                        </div>
+
+                        <button type="submit" class="primary-button full-width">Add Project</button>
+                    </form>
+                    <p id="projectMessage" aria-live="polite" style="margin-top: 10px; font-weight: 700; text-align: center; color: #0f766e;"></p>
+                </section>
+
+                <!-- Active Projects Table -->
+                <section class="admin-panel" style="min-width: 0;">
+                    <div class="panel-title-row">
+                        <div>
+                            <p class="eyebrow">Projects Portfolio</p>
+                            <h2>Active Project Table Details</h2>
+                        </div>
+                        <span class="engineer-count" id="projectCount">0 projects</span>
+                    </div>
+
+                    <div style="overflow-x: auto; margin-top: 15px;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; line-height: 1.4;">
+                            <thead>
+                                <tr style="background: #eef6f5; color: #0b5f59; font-weight: 700; border-bottom: 2px solid #9ad6cf;">
+                                    <th style="padding: 12px; min-width: 60px;">Picture</th>
+                                    <th style="padding: 12px; min-width: 150px;">Project Details</th>
+                                    <th style="padding: 12px; min-width: 90px;">Status</th>
+                                    <th style="padding: 12px; min-width: 110px;">Location</th>
+                                    <th style="padding: 12px; min-width: 180px;">Technical Specs</th>
+                                    <th style="padding: 12px; min-width: 200px;">Description & Log</th>
+                                    <th style="padding: 12px; text-align: center; min-width: 90px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectsTableBody">
+                                <!-- Loaded dynamically -->
+                                <tr><td colspan="7" style="text-align: center; padding: 20px; color: #627d98;">Loading projects database...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 CrackVision. All rights reserved.</p>
+    </footer>
+
+    <!-- Global scripts and libraries -->
+    <script src="../static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const adminDashboard = document.getElementById('adminDashboard');
+        const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+        const engineerForm = document.getElementById('engineerForm');
+        const engineerMessage = document.getElementById('engineerMessage');
+        const engineerList = document.getElementById('engineerList');
+        const engineerCount = document.getElementById('engineerCount');
+
+        // Project Management Elements
+        const tabEngineers = document.getElementById('tabEngineers');
+        const tabProjects = document.getElementById('tabProjects');
+        const engineersSection = document.getElementById('engineersSection');
+        const projectsSection = document.getElementById('projectsSection');
+        const dashboardTitle = document.getElementById('dashboardTitle');
+        const dashboardSubtitle = document.getElementById('dashboardSubtitle');
+        
+        const projectForm = document.getElementById('projectForm');
+        const projectMessage = document.getElementById('projectMessage');
+        const projectsTableBody = document.getElementById('projectsTableBody');
+        const projectCount = document.getElementById('projectCount');
+
+        let loadedEngineers = [];
+        let loadedProjects = [];
+
+        // Check if admin logout button exists in top header and attach listener
+        const topAdminLogoutBtn = document.getElementById('topAdminLogoutBtn');
+        if (topAdminLogoutBtn) {
+            topAdminLogoutBtn.addEventListener('click', logoutAdmin);
+        }
+        if (adminLogoutBtn) {
+            adminLogoutBtn.addEventListener('click', logoutAdmin);
+        }
+
+        function fetchEngineers() {
+            fetch('/admin/get_engineers')
+            .then(res => {
+                if (res.ok) return res.json();
+                throw new Error('Failed to load engineers.');
+            })
+            .then(data => {
+                loadedEngineers = data;
+                renderEngineers();
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        }
+
+        function setAdminMessage(element, text, type) {
+            element.textContent = text;
+            element.className = type ? `message-${type}` : '';
+            if (type === 'success') {
+                element.style.color = '#0f766e';
+            } else if (type === 'error') {
+                element.style.color = '#ef4444';
+            } else {
+                element.style.color = '#627d98';
+            }
+        }
+
+        function escapeHtml(value) {
+            if (!value) return '';
+            return value.toString().replace(/[&<>"']/g, character => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[character]));
+        }
+
+        function showDashboard() {
+            adminDashboard.classList.remove('hidden');
+            fetchEngineers();
+        }
+
+        function updateEngineerStatus(email, status) {
+            fetch('/admin/update_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, status })
+            })
+            .then(response => {
+                if (response.ok) {
+                    fetchEngineers();
+                } else {
+                    alert('Failed to update status.');
+                }
+            })
+            .catch(err => {
+                console.error("Failed to update status:", err);
+            });
+        }
+
+        function deleteEngineer(email) {
+            if (!confirm('Are you sure you want to delete this engineer?')) return;
+            
+            fetch('/admin/delete_engineer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            })
+            .then(response => {
+                if (response.ok) {
+                    fetchEngineers();
+                } else {
+                    alert('Failed to delete engineer.');
+                }
+            })
+            .catch(err => {
+                console.error("Failed to delete engineer:", err);
+            });
+        }
+
+        function renderEngineers() {
+            const engineers = loadedEngineers;
+            engineerCount.textContent = `${engineers.length} engineer${engineers.length === 1 ? '' : 's'}`;
+
+            if (!engineers.length) {
+                engineerList.innerHTML = '<p class="empty-state">No active engineers in system database.</p>';
+                return;
+            }
+
+            engineerList.innerHTML = engineers.map(engineer => {
+                const name = escapeHtml(engineer.name);
+                const username = escapeHtml(engineer.username);
+                const email = escapeHtml(engineer.email);
+                const phone = escapeHtml(engineer.phone);
+                const dob = escapeHtml(engineer.dob);
+                const address = escapeHtml(engineer.address);
+                const gender = escapeHtml(engineer.gender);
+                const employeeId = escapeHtml(engineer.employeeId);
+                const department = escapeHtml(engineer.department);
+                const designation = escapeHtml(engineer.designation);
+                const status = escapeHtml(engineer.status);
+
+                return `
+                <article class="engineer-card">
+                    <div class="engineer-card-top">
+                        <div>
+                            <h3>${name}</h3>
+                            <p style="font-weight: 700; color: #0b5f59;">Username: ${username}</p>
+                        </div>
+                        <span class="status-badge approved">${status}</span>
+                    </div>
+                    <dl class="engineer-details" style="grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <div><dt>Email</dt><dd style="font-size: 13px; font-weight: 700;">${email}</dd></div>
+                        <div><dt>Phone</dt><dd style="font-size: 13px; font-weight: 700;">${phone}</dd></div>
+                        <div><dt>Date of Birth</dt><dd style="font-size: 13px; font-weight: 700;">${dob}</dd></div>
+                        <div><dt>Gender</dt><dd style="font-size: 13px; font-weight: 700;">${gender}</dd></div>
+                        <div style="grid-column: span 2;"><dt>Address</dt><dd style="font-size: 13px; font-weight: 700;">${address}</dd></div>
+                    </dl>
+                    <div class="engineer-actions" style="margin-top: 15px;">
+                        <button type="button" class="small-button delete" data-action="delete" data-email="${email}"><i class="fa-solid fa-trash" style="margin-right: 6px;"></i>Delete Engineer</button>
+                    </div>
+                </article>
+            `;
+            }).join('');
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('currentAdmin');
+            window.location.href = 'login.html';
+        }
+
+        engineerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById('engineerName').value.trim();
+            const username = document.getElementById('engineerUsername').value.trim().toLowerCase();
+            const email = document.getElementById('engineerEmail').value.trim().toLowerCase();
+            const phone = document.getElementById('engineerPhone').value.trim();
+            const dob = document.getElementById('engineerDob').value;
+            const gender = document.getElementById('engineerGender').value;
+            const address = document.getElementById('engineerAddress').value.trim();
+            const password = document.getElementById('engineerPassword').value;
+
+            if (!/^[0-9]{10}$/.test(phone)) {
+                setAdminMessage(engineerMessage, 'Phone number must be 10 digits.', 'error');
+                return;
+            }
+
+            setAdminMessage(engineerMessage, 'Adding engineer...', 'info');
+
+            fetch('/admin/add_engineer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name, username, email, phone, dob, gender, address, password
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(err => { throw new Error(err.message || 'Failed to add engineer.'); });
+                }
+            })
+            .then(data => {
+                engineerForm.reset();
+                setAdminMessage(engineerMessage, 'Engineer added successfully.', 'success');
+                fetchEngineers();
+            })
+            .catch(err => {
+                setAdminMessage(engineerMessage, err.message, 'error');
+            });
+        });
+
+        engineerList.addEventListener('click', (event) => {
+            const button = event.target.closest('button[data-action]');
+            if (!button) {
+                return;
+            }
+
+            const action = button.dataset.action;
+            const email = button.dataset.email;
+
+            if (action === 'delete') {
+                deleteEngineer(email);
+                return;
+            }
+        });
+
+        // ==========================================
+        // PROJECT MANAGEMENT CONTROLLER LOGIC
+        // ==========================================
+
+        // Tab Navigation switching
+        tabEngineers.addEventListener('click', () => {
+            tabEngineers.style.background = '#0f766e';
+            tabEngineers.style.color = 'white';
+            tabEngineers.style.border = 'none';
+            
+            tabProjects.style.background = 'transparent';
+            tabProjects.style.color = '#52606d';
+            tabProjects.style.border = '1px solid #d9e2ec';
+            
+            engineersSection.classList.remove('hidden');
+            projectsSection.classList.add('hidden');
+            
+            dashboardTitle.textContent = 'Engineer Management';
+            dashboardSubtitle.textContent = 'Register new engineers, view active credentials, and manage authorizations.';
+            fetchEngineers();
+        });
+
+        tabProjects.addEventListener('click', () => {
+            tabProjects.style.background = '#0f766e';
+            tabProjects.style.color = 'white';
+            tabProjects.style.border = 'none';
+            
+            tabEngineers.style.background = 'transparent';
+            tabEngineers.style.color = '#52606d';
+            tabEngineers.style.border = '1px solid #d9e2ec';
+            
+            projectsSection.classList.remove('hidden');
+            engineersSection.classList.add('hidden');
+            
+            dashboardTitle.textContent = 'Project Management';
+            dashboardSubtitle.textContent = 'Create new construction projects, configure details, and manage existing builds.';
+            fetchProjects();
+        });
+
+        // Fetch dynamic projects
+        function fetchProjects() {
+            fetch('/api/projects')
+            .then(res => {
+                if (res.ok) return res.json();
+                throw new Error('Failed to load projects.');
+            })
+            .then(data => {
+                loadedProjects = data;
+                renderProjects();
+            })
+            .catch(err => {
+                console.error(err);
+                projectsTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: #ef4444;">Failed to load projects.</td></tr>';
+            });
+        }
+
+        // Render projects in dynamic table view
+        function renderProjects() {
+            const projects = loadedProjects;
+            projectCount.textContent = `${projects.length} project${projects.length === 1 ? '' : 's'}`;
+            
+            if (!projects.length) {
+                projectsTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: #627d98;">No projects found in system database.</td></tr>';
+                return;
+            }
+            
+            projectsTableBody.innerHTML = projects.map(proj => {
+                const id = escapeHtml(proj.id);
+                const pname = escapeHtml(proj.pname);
+                const pcat = escapeHtml(proj.pcat);
+                const ptype = escapeHtml(proj.ptype);
+                const duration = escapeHtml(proj.duration);
+                const area = escapeHtml(proj.area);
+                const client = escapeHtml(proj.client);
+                const location = escapeHtml(proj.location);
+                const bheight = escapeHtml(proj.bheight || 'N/A');
+                const ftype = escapeHtml(proj.ftype || 'N/A');
+                const pspace = escapeHtml(proj.pspace || 'N/A');
+                const erate = escapeHtml(proj.erate || 'N/A');
+                const sdesc = escapeHtml(proj.sdesc || 'N/A');
+                const plog = escapeHtml(proj.plog || proj.poverview || 'N/A');
+                const status = escapeHtml(proj.status || 'Ongoing');
+                const statusClass = status.toLowerCase();
+                const img = escapeHtml(proj.img);
+                
+                return `
+                <tr class="project-row" style="border-bottom: 1px solid #e2e8f0; vertical-align: top;">
+                    <td style="padding: 12px; text-align: center;">
+                        <img src="${img}" alt="${pname}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    </td>
+                    <td style="padding: 12px; font-weight: 700;">
+                        <span style="display: block; font-size: 14px; color: #0f172a;">${pname}</span>
+                        <span style="font-size: 11px; text-transform: uppercase; color: #0f766e; background: #eef6f5; padding: 2px 6px; border-radius: 4px;">${pcat}</span>
+                        <div style="font-size: 12px; font-weight: 500; color: #475569; margin-top: 6px;">Type: ${ptype}</div>
+                    </td>
+                    <td style="padding: 12px; text-align: center; vertical-align: middle;">
+                        <span class="status-badge ${statusClass}">${status}</span>
+                    </td>
+                    <td style="padding: 12px; font-weight: 600; color: #334155; vertical-align: middle;">${location}</td>
+                    <td style="padding: 12px; font-size: 12px; color: #334155;">
+                        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
+                            <li><strong>Client:</strong> ${client}</li>
+                            <li><strong>Duration:</strong> ${duration}</li>
+                            <li><strong>Area:</strong> ${area}</li>
+                            <li><strong>Height:</strong> ${bheight}</li>
+                            <li><strong>Foundation:</strong> ${ftype}</li>
+                            <li><strong>Parking:</strong> ${pspace}</li>
+                            <li><strong>Energy:</strong> ${erate}</li>
+                        </ul>
+                    </td>
+                    <td style="padding: 12px; font-size: 12.5px; color: #475569; max-width: 280px; word-wrap: break-word;">
+                        <p style="font-weight: 700; margin-bottom: 6px; color: #1e293b;">${sdesc}</p>
+                        <p style="font-style: italic; font-size: 11.5px; border-left: 2px solid #0f766e; padding-left: 8px; white-space: pre-wrap; background: #f8fafc; padding: 6px;">${plog}</p>
+                    </td>
+                    <td style="padding: 12px; text-align: center; vertical-align: middle;">
+                        <button type="button" class="small-button delete delete-project-btn" data-id="${id}" style="display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; border-radius: 8px; border: 1px solid #fda29b;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        // Add Project Form submission
+        projectForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            
+            const pcat = document.getElementById('projectCategory').value;
+            const pname = document.getElementById('projectName').value.trim();
+            const ptype = document.getElementById('projectType').value.trim();
+            const duration = document.getElementById('projectDuration').value.trim();
+            const area = document.getElementById('projectArea').value.trim();
+            const client = document.getElementById('projectClient').value.trim();
+            const location = document.getElementById('projectLocation').value.trim();
+            const bheight = document.getElementById('projectHeight').value.trim();
+            const ftype = document.getElementById('projectFoundation').value.trim();
+            const pspace = document.getElementById('projectParking').value.trim();
+            const erate = document.getElementById('projectEnergy').value.trim();
+            const sdesc = document.getElementById('projectSdesc').value.trim();
+            const plog = document.getElementById('projectLog').value.trim();
+            const status = document.getElementById('projectStatus').value;
+            const projectImage = document.getElementById('projectImage').files[0];
+            
+            setAdminMessage(projectMessage, 'Saving project...', 'info');
+            
+            const formData = new FormData();
+            formData.append('pcat', pcat);
+            formData.append('pname', pname);
+            formData.append('ptype', ptype);
+            formData.append('duration', duration);
+            formData.append('area', area);
+            formData.append('client', client);
+            formData.append('location', location);
+            formData.append('bheight', bheight);
+            formData.append('ftype', ftype);
+            formData.append('pspace', pspace);
+            formData.append('erate', erate);
+            formData.append('sdesc', sdesc);
+            formData.append('plog', plog);
+            formData.append('status', status);
+            if (projectImage) {
+                formData.append('projectImage', projectImage);
+            }
+            
+            fetch('/admin/add_project', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(err => { throw new Error(err.message || 'Failed to add project.'); });
+                }
+            })
+            .then(data => {
+                projectForm.reset();
+                setAdminMessage(projectMessage, 'Project added successfully.', 'success');
+                
+                // If we are currently in the projects tab, reload table
+                fetchProjects();
+            })
+            .catch(err => {
+                setAdminMessage(projectMessage, err.message, 'error');
+            });
+        });
+
+        // Delete Project handler
+        function deleteProject(projectId) {
+            if (!confirm('Are you sure you want to delete this project? This will permanently remove it from the system portfolio.')) return;
+            
+            fetch('/admin/delete_project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: parseInt(projectId) })
+            })
+            .then(response => {
+                if (response.ok) {
+                    fetchProjects();
+                } else {
+                    alert('Failed to delete project.');
+                }
+            })
+            .catch(err => {
+                console.error("Failed to delete project:", err);
+            });
+        }
+        
+        // Dynamic event listener for delete actions
+        projectsTableBody.addEventListener('click', (event) => {
+            const button = event.target.closest('.delete-project-btn');
+            if (button) {
+                const projectId = button.dataset.id;
+                deleteProject(projectId);
+            }
+        });
+
+        const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin') || 'null');
+        if (currentAdmin && currentAdmin.role === 'admin') {
+            showDashboard();
+        } else {
+            window.location.href = 'login.html';
+        }
+
+        if (typeof updateLoginState === 'function') {
+            updateLoginState();
+        }
+    </script>
+</body>
+</html>

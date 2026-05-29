@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrackVision | Register</title>
+    <!-- Stylesheets & Icons fallback for local manual previews -->
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-zinc-800 selection:text-white overflow-x-hidden">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="logo" href="index.html" aria-label="CrackVision home">
+            <span class="logo-text">CrackVision</span>
+        </a>
+        <nav aria-label="Main navigation">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li class="nav-actions" id="navActions">
+                    <a class="nav-button nav-login" href="login.html">Login</a>
+                    <a class="nav-button nav-register active" href="register.html">Register</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="simple-auth-page">
+        <section class="auth-card is-register" id="authCard">
+            <h2 id="title">Register</h2>
+
+            <form id="authForm" class="auth-form" action="/register_db" method="POST">
+                <div class="form-field">
+                    <label for="name" id="nameLabel">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" autocomplete="name" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose username" autocomplete="username" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="email" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="phone" id="phoneLabel">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" inputmode="numeric"
+                        pattern="[0-9]{10}" maxlength="10" autocomplete="tel" title="Enter a 10 digit phone number" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" autocomplete="bday" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="gender" id="genderLabel">Gender</label>
+                    <select id="gender" name="gender" autocomplete="sex" required>
+                        <option value="">Select gender</option>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-field wide-field">
+                    <label for="address" id="addressLabel">Address</label>
+                    <textarea id="address" name="address" placeholder="Enter your address" rows="3"
+                        autocomplete="street-address" required></textarea>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password"
+                        autocomplete="new-password" minlength="6" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="confirmPassword" id="confirmLabel">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password"
+                        autocomplete="new-password" minlength="6" required>
+                </div>
+
+                <button type="submit" id="submitBtn" class="primary-button full-width">Register</button>
+                <a href="login.html" id="toggleBtn" class="secondary-button full-width">Back to Login</a>
+            </form>
+
+            <p id="message" aria-live="polite" style="margin-top: 10px; font-weight: 700; text-align: center; color: #ef4444;"></p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 CrackVision. All rights reserved.</p>
+    </footer>
+
+    <!-- Global scripts and libraries -->
+    <script src="../static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const authForm = document.getElementById('authForm');
+        const phoneInput = document.getElementById('phone');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const message = document.getElementById('message');
+
+        function setMessage(text, type) {
+            message.textContent = text;
+            message.className = type ? `message-${type}` : '';
+            if (type === 'success') {
+                message.style.color = '#0f766e';
+            } else if (type === 'error') {
+                message.style.color = '#ef4444';
+            } else {
+                message.style.color = '#627d98';
+            }
+        }
+
+        authForm.addEventListener('submit', (event) => {
+            const phone = phoneInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (!/^[0-9]{10}$/.test(phone)) {
+                event.preventDefault();
+                setMessage('Phone number must be 10 digits.', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                event.preventDefault();
+                setMessage('Passwords do not match.', 'error');
+                return;
+            }
+        });
+
+        if (typeof updateLoginState === 'function') {
+            updateLoginState();
+        }
+    </script>
+</body>
+</html>

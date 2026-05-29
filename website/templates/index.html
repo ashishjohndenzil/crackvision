@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrackVision | Home</title>
+    <!-- Fallback stylesheet and icons for manual browser local preview -->
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-zinc-800 selection:text-white overflow-x-hidden">
+    
+    <header class="site-header">
+        <a class="logo" href="index.html" aria-label="CrackVision home">
+            <span class="logo-text">CrackVision</span>
+        </a>
+        <nav aria-label="Main navigation">
+            <ul class="nav-links">
+                <li><a class="active" href="index.html">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li class="nav-actions" id="navActions">
+                    <a class="nav-button nav-login" href="login.html">Login</a>
+                    <a class="nav-button nav-register" href="register.html">Register</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <p class="eyebrow">Construction and structural inspection</p>
+                <h1>Building safer spaces with smarter project monitoring.</h1>
+                <p>
+                    CrackVision supports construction teams with public project visibility,
+                    image-based crack inspection, and organized maintenance review for buildings,
+                    walls, floors, slabs, columns, beams, and concrete structures.
+                </p>
+                <div class="hero-actions">
+                    <a class="primary-button" href="#projects">View Projects</a>
+                    <a class="secondary-button hero-secondary" href="login.html">Login</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section" id="about">
+            <div class="about-layout">
+                <div>
+                    <p class="eyebrow">About</p>
+                    <h2>Construction work backed by digital inspection.</h2>
+                    <p>
+                        CrackVision brings construction project information and surface inspection
+                        support into one simple website. Visitors can view company projects, while
+                        approved engineers can use inspection tools to document cracks and structural
+                        surface issues.
+                    </p>
+                </div>
+
+                <div class="stats-grid" aria-label="Company highlights">
+                    <div class="stat-card">
+                        <strong>12+</strong>
+                        <span>Project categories</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong>24/7</strong>
+                        <span>Digital access</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong>3</strong>
+                        <span>Project stages tracked</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Projects Section -->
+        <section class="page-section muted" id="projects">
+            <div class="section-heading">
+                <p class="eyebrow">Projects</p>
+                <h2>Construction Projects</h2>
+                <p>
+                    Explore our major residential, commercial, infrastructure, and renovation
+                    projects. This section is open for everyone to view.
+                </p>
+            </div>
+
+            <div class="project-grid" id="dynamicProjectGrid">
+                <!-- Loaded dynamically via JavaScript -->
+                <div class="empty-state" style="grid-column: span 3; padding: 40px; text-align: center;">
+                    Loading project portfolio...
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <div class="section-heading">
+                <p class="eyebrow">Services</p>
+                <h2>What the company handles</h2>
+                <p>
+                    From new construction to repair planning, the platform keeps project
+                    information clear for visitors and inspection work organized for the team.
+                </p>
+            </div>
+
+            <div class="feature-grid service-grid">
+                <article class="feature-card">
+                    <span class="feature-number">01</span>
+                    <h3>Building Construction</h3>
+                    <p>Residential, commercial, and industrial projects planned with clear progress tracking.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-number">02</span>
+                    <h3>Concrete and Structural Works</h3>
+                    <p>Concrete walls, floors, slabs, columns, beams, and other structural surface improvements.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-number">03</span>
+                    <h3>Maintenance Review</h3>
+                    <p>Inspection support for cracks, surface damage, renovation needs, and repair documentation.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Dynamic Crack Analysis Section -->
+        <section class="page-section muted" id="inspection-tool">
+            <div class="upload-layout">
+                <div>
+                    <p class="eyebrow">Inspection Tool</p>
+                    <h2>Upload a surface image for crack inspection</h2>
+                    <p>
+                        Engineers and site inspectors can upload concrete surface images from walls,
+                        slabs, columns, and concrete structures to trigger automated deep-learning crack inspection models.
+                    </p>
+                    <ul class="check-list">
+                        <li>Concrete surface review</li>
+                        <li>Floor, slab, and wall crack documentation</li>
+                        <li>Maintenance report preparation</li>
+                    </ul>
+                </div>
+
+                <div class="upload-box-container">
+                    <form class="upload-box" id="uploadForm">
+                        <label for="crackImage" style="cursor: pointer; display: block; padding: 12px; background: #e0f2fe; color: #0369a1; border-radius: 8px; font-weight: 700; text-align: center; border: 2px dashed #0284c7; transition: background 0.2s ease;">
+                            <i class="fa-solid fa-cloud-arrow-up" style="margin-right: 8px;"></i>Choose Surface Image
+                        </label>
+                        <input type="file" id="crackImage" name="crackImage" accept="image/*" style="display: none;" required>
+                        <p style="margin-top: 10px; font-size: 13px; text-align: center;">Supported types: JPG, PNG, JPEG</p>
+                        <button type="submit" class="primary-button full-width" style="margin-top: 15px;">Analyze Image</button>
+                        <p class="upload-status" id="uploadStatus" aria-live="polite" style="margin-top: 10px; text-align: center; font-weight: 700; color: #0f766e;"></p>
+                    </form>
+
+                    <!-- Real-Time Analysis Report Card -->
+                    <div id="analysisReportCard" class="auth-card" style="display: none; margin-top: 20px; border-color: #0f766e; padding: 20px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 15px 35px rgba(15, 118, 110, 0.15);">
+                        <h3 style="color: #0f766e; border-bottom: 2px solid #ccfbf1; padding-bottom: 8px; margin-bottom: 15px;">
+                            <i class="fa-solid fa-microscope" style="margin-right: 8px;"></i>Inspection Report
+                        </h3>
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: center;">
+                            <div id="imageComparisonContainer" style="position: relative; width: 120px; height: 120px; border: 1px solid #d9e2ec; border-radius: 8px; overflow: hidden; background: #f0f4f8;">
+                                <img id="analysisImagePreview" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Surface Preview">
+                                <div id="crackOverlay" style="display: none; position: absolute; inset: 0; background: rgba(239, 68, 68, 0.25); border: 2px solid #ef4444; pointer-events: none;"></div>
+                            </div>
+                            <div style="flex: 1;">
+                                <dl style="display: grid; gap: 6px; font-size: 14px;">
+                                    <div style="display: flex; justify-content: space-between;"><dt style="color: #52606d; font-weight: 700;">Result:</dt><dd id="analysisResult" style="font-weight: 800; color: #b42318;"></dd></div>
+                                    <div style="display: flex; justify-content: space-between;"><dt style="color: #52606d; font-weight: 700;">Confidence:</dt><dd id="analysisConfidence" style="font-weight: 800; color: #102a43;"></dd></div>
+                                    <div style="display: flex; justify-content: space-between;"><dt style="color: #52606d; font-weight: 700;">Avg Depth:</dt><dd id="analysisDepth" style="font-weight: 800; color: #102a43;"></dd></div>
+                                </dl>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #627d98; font-style: italic; border-top: 1px solid #e6edf3; padding-top: 8px; margin-top: 10px;">
+                            Analysis logged in database for structural records.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <div class="section-heading">
+                <p class="eyebrow">Workflow</p>
+                <h2>Simple inspection workflow</h2>
+                <p>
+                    The workflow is designed so engineers can move from site observation to
+                    documented review without unnecessary steps.
+                </p>
+            </div>
+
+            <div class="workflow-list">
+                <article>
+                    <span>1</span>
+                    <h3>Capture</h3>
+                    <p>Take a clear photo of the wall, floor, slab, column, beam, or concrete surface.</p>
+                </article>
+                <article>
+                    <span>2</span>
+                    <h3>Inspect</h3>
+                    <p>Upload the image and prepare it for crack detection or manual review.</p>
+                </article>
+                <article>
+                    <span>3</span>
+                    <h3>Report</h3>
+                    <p>Use the inspection result to support project maintenance decisions.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="page-section muted" id="contact">
+            <div class="contact-compact">
+                <div>
+                    <p class="eyebrow">Contact</p>
+                    <h2>Get in touch</h2>
+                    <p>For project details, engineer access, or inspection support.</p>
+                </div>
+
+                <div class="contact-quick">
+                    <span>info@crackvision.com</span>
+                    <span>+91 98765 43210</span>
+                    <span>Kochi, Kerala</span>
+                </div>
+
+                <div class="contact-actions" id="contactActions">
+                    <a class="primary-button" href="register.html">Register</a>
+                    <a class="secondary-button" href="login.html">Login</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Glassmorphic Dynamic Project Details Modal -->
+    <div id="projectModal" class="project-modal" style="display: none; position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease;">
+        <div class="auth-card" style="width: 90%; max-width: 750px; max-height: 90vh; overflow-y: auto; position: relative; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.98); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); padding: 30px; animation: slideIn 0.3s ease;">
+            <button id="closeModalBtn" style="position: absolute; right: 20px; top: 20px; background: transparent; border: none; font-size: 24px; cursor: pointer; color: #627d98;">&times;</button>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="height: 220px; width: 100%; border-radius: 8px; overflow: hidden; background: #e2e8f0;">
+                    <img id="modalImg" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Project Image">
+                </div>
+                <div>
+                    <span id="modalCat" class="status-badge ongoing" style="margin-bottom: 8px; text-transform: uppercase; font-size: 11px;">Category</span>
+                    <h2 id="modalName" style="color: #102a43; font-size: 28px; line-height: 1.2; margin-bottom: 5px;">Project Name</h2>
+                    <p id="modalType" style="color: #627d98; font-weight: 700; margin-bottom: 15px;">Project Type</p>
+                    <p id="modalOverview" style="color: #52606d; font-size: 15px; margin-bottom: 20px;">Detailed project description will go here...</p>
+                </div>
+                
+                <h3 style="color: #102a43; border-bottom: 2px solid #eef6f5; padding-bottom: 6px;">Technical Specifications</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px 30px; font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f4f8; padding-bottom: 6px;"><span style="color: #627d98; font-weight: 700;">Duration</span><strong id="modalDuration" style="color: #102a43;">Duration</strong></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f4f8; padding-bottom: 6px;"><span style="color: #627d98; font-weight: 700;">Area Covered</span><strong id="modalArea" style="color: #102a43;">Area</strong></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f4f8; padding-bottom: 6px;"><span style="color: #627d98; font-weight: 700;">Client</span><strong id="modalClient" style="color: #102a43;">Client</strong></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f4f8; padding-bottom: 6px;"><span style="color: #627d98; font-weight: 700;">Location</span><strong id="modalLocation" style="color: #102a43;">Location</strong></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f4f8; padding-bottom: 6px;"><span style="color: #627d98; font-weight: 700;">Building Height</span><strong id="modalHeight" style="color: #102a43;">Height</strong></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f4f8; padding-bottom: 6px;"><span style="color: #627d98; font-weight: 700;">Foundation Type</span><strong id="modalFoundation" style="color: #102a43;">Foundation</strong></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f4f8; padding-bottom: 6px;"><span style="color: #627d98; font-weight: 700;">Material Spec</span><strong id="modalMaterial" style="color: #102a43;">Material</strong></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f4f8; padding-bottom: 6px;"><span style="color: #627d98; font-weight: 700;">Spacing</span><strong id="modalSpacing" style="color: #102a43;">Spacing</strong></div>
+                </div>
+
+                <!-- Custom Project Log container -->
+                <div id="modalLogContainer" style="display: none; background: #eef6f5; border-left: 4px solid #0f766e; padding: 16px; border-radius: 8px; margin-top: 15px;">
+                    <h4 style="color: #0b5f59; margin-bottom: 6px; font-weight: 700; font-size: 14.5px; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-file-contract"></i> Project Log Details
+                    </h4>
+                    <p id="modalLogText" style="color: #334155; font-size: 13.5px; line-height: 1.5; font-style: italic; white-space: pre-wrap; margin: 0;"></p>
+                </div>
+
+                <!-- Interactive Reviews Section -->
+                <h3 style="color: #102a43; border-bottom: 2px solid #eef6f5; padding-bottom: 6px; margin-top: 15px;">Maintenance Reviews & Inspections</h3>
+                <div id="modalReviewsList" style="display: grid; gap: 15px; max-height: 200px; overflow-y: auto;">
+                    <!-- Loaded dynamically -->
+                </div>
+
+                <div id="addReviewFormContainer" style="display: none; border-top: 1px solid #eef6f5; padding-top: 15px; margin-top: 10px;">
+                    <h4 style="color: #102a43; margin-bottom: 10px;">Add Construction Review</h4>
+                    <form id="addReviewForm" style="display: flex; gap: 10px;">
+                        <input type="text" id="newReviewText" placeholder="Write a review about structural observations..." style="flex: 1; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;" required>
+                        <button type="submit" class="primary-button" style="margin-top: 0; min-height: 40px; padding: 0 15px;">Submit</button>
+                    </form>
+                </div>
+                <div id="loginToReviewMessage" style="text-align: center; color: #627d98; font-size: 13px; font-style: italic; margin-top: 10px;">
+                    Please <a href="login.html" style="color: #0f766e; font-weight: 700;">Login</a> to post dynamic structural reviews.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Extra dynamic styling inside stylesheet block -->
+    <style>
+        .project-modal {
+            display: none !important;
+        }
+        .project-modal.active {
+            display: flex !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 CrackVision. All rights reserved.</p>
+    </footer>
+
+    <script src="../static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const crackImage = document.getElementById('crackImage');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const navActions = document.getElementById('navActions');
+        const contactActions = document.getElementById('contactActions');
+
+        const dynamicProjectGrid = document.getElementById('dynamicProjectGrid');
+        const projectModal = document.getElementById('projectModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        let activeProjectId = null;
+
+        // Hardcoded static fallback projects portfolio for local manual static filesystem previewing
+        const fallbackProjects = [
+            {
+                id: 1,
+                pname: 'NetSoft Business Tower',
+                pcat: 'Commercial Complex',
+                ptype: 'Commercial Construction',
+                location: 'Kochi, Kerala',
+                status: 'Ongoing',
+                sdesc: 'Multi-floor commercial building with office spaces, parking facilities, and modern structural safety systems.',
+                img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=70',
+                duration: '24 Months',
+                area: '45,000 sq ft',
+                client: 'NetSoft Group',
+                bheight: '85 meters (20 Floors)',
+                ftype: 'Pile Foundation',
+                fmaterial: 'Reinforced Concrete (M40 grade)',
+                pspace: '6.0 meters',
+                poverview: 'The NetSoft Business Tower is a flagship corporate commercial development designed to meet the highest safety, efficiency, and engineering standards. Featuring state-of-the-art facilities, seismic protection systems, and automated surface scanning sensor slots, it is engineered for extreme durability.',
+                reviews: [
+                    { reviewer_name: 'Demo User', review_text: 'The structural slab looks extremely solid and execution seems highly professional. Excellent work!', date_time: '2026-05-24 14:32:00' }
+                ]
+            },
+            {
+                id: 2,
+                pname: 'Green Valley Apartments',
+                pcat: 'Residential Building',
+                ptype: 'Residential Construction',
+                location: 'Chennai, Tamil Nadu',
+                status: 'Completed',
+                sdesc: 'Residential apartment project focused on durable construction, practical layouts, and reliable long-term maintenance.',
+                img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=70',
+                duration: '18 Months',
+                area: '65,000 sq ft',
+                client: 'Green Valley Developers',
+                bheight: '40 meters (12 Floors)',
+                ftype: 'Raft Foundation',
+                fmaterial: 'Concrete and High-Strength Steel Barrels',
+                pspace: '4.5 meters',
+                poverview: 'Green Valley Apartments is a high-density, eco-friendly luxury residential housing complex. Built with structural safety as the highest priority, the buildings are monitored with real-time inspection cameras and utilize highly durable low-shrinkage self-consolidating concrete.',
+                reviews: [
+                    { reviewer_name: 'Demo User', review_text: 'The foundation work was completed precisely on schedule. The finishes are very durable and look clean.', date_time: '2025-04-10 11:15:00' }
+                ]
+            },
+            {
+                id: 3,
+                pname: 'Concrete Surface Restoration',
+                pcat: 'Structural Repair',
+                ptype: 'Infrastructure Rehabilitation',
+                location: 'Bengaluru, Karnataka',
+                status: 'Upcoming',
+                sdesc: 'Planned concrete restoration work including surface repair, crack sealing, slab review, and inspection-ready documentation.',
+                img: 'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=600&q=70',
+                duration: '6 Months',
+                area: '12,000 sq ft',
+                client: 'National Highway Authority',
+                bheight: 'N/A',
+                ftype: 'N/A',
+                fmaterial: 'Fiber-Reinforced Cement and Epoxies',
+                pspace: 'N/A',
+                poverview: 'This project targets critical rehabilitation of a heavy-traffic highway bridge surface and under-girders. The execution details involve removing degraded concrete layers, injecting epoxy micro-fillers into detected crack paths, and applying a robust protective fiber polymer overlay.',
+                reviews: []
+            }
+        ];
+
+        // Helper to render card lists
+        function renderProjectsList(projects) {
+            if (!projects.length) {
+                dynamicProjectGrid.innerHTML = '<div class="empty-state" style="grid-column: span 3;">No projects found.</div>';
+                return;
+            }
+            
+            dynamicProjectGrid.innerHTML = projects.map(proj => {
+                const statusClass = proj.status ? proj.status.toLowerCase() : 'ongoing';
+                return `
+                <article class="project-card" style="cursor: pointer;" onclick="openProjectDetails(${proj.id})">
+                    <div style="height: 160px; width: 100%; border-radius: 8px; overflow: hidden; background: #e2e8f0; margin-bottom: 12px;">
+                        <img style="width: 100%; height: 100%; object-fit: cover;" src="${proj.img}" alt="${proj.pname}">
+                    </div>
+                    <div class="project-card-header">
+                        <span class="status-badge ${statusClass}">${proj.status}</span>
+                        <span>${proj.pcat}</span>
+                    </div>
+                    <h3 style="margin-top: 5px;">${proj.pname}</h3>
+                    <dl class="project-details" style="margin-top: 10px;">
+                        <div>
+                            <dt>Location</dt>
+                            <dd>${proj.location}</dd>
+                        </div>
+                    </dl>
+                    <p style="margin-top: 10px; font-size: 14px; color: #52606d; line-height: 1.4;">${proj.sdesc}</p>
+                </article>
+                `;
+            }).join('');
+        }
+
+        // Dynamically Load Projects
+        function loadProjects() {
+            fetch('/api/projects')
+            .then(res => res.json())
+            .then(projects => {
+                renderProjectsList(projects);
+            })
+            .catch(err => {
+                console.warn("Failed to load projects via API (likely static manual file preview). Rendering fallback portfolio...", err);
+                renderProjectsList(fallbackProjects);
+            });
+        }
+
+        // Open Project Details and Load Reviews
+        window.openProjectDetails = function(projectId) {
+            activeProjectId = projectId;
+            
+            fetch(`/api/project/${projectId}`)
+            .then(res => res.json())
+            .then(proj => {
+                renderModalDetails(proj);
+            })
+            .catch(err => {
+                console.warn("Failed to fetch project details via API. Using local fallback project details...", err);
+                const localProj = fallbackProjects.find(p => p.id == projectId);
+                if (localProj) {
+                    renderModalDetails(localProj);
+                }
+            });
+        };
+
+        function renderModalDetails(proj) {
+            document.getElementById('modalImg').src = proj.img;
+            document.getElementById('modalCat').textContent = proj.pcat;
+            document.getElementById('modalName').textContent = proj.pname;
+            document.getElementById('modalType').textContent = proj.ptype;
+            document.getElementById('modalOverview').textContent = proj.poverview;
+            document.getElementById('modalDuration').textContent = proj.duration;
+            document.getElementById('modalArea').textContent = proj.area;
+            document.getElementById('modalClient').textContent = proj.client;
+            document.getElementById('modalLocation').textContent = proj.location;
+            document.getElementById('modalHeight').textContent = proj.bheight;
+            document.getElementById('modalFoundation').textContent = proj.ftype;
+            document.getElementById('modalMaterial').textContent = proj.fmaterial;
+            document.getElementById('modalSpacing').textContent = proj.pspace;
+
+            const logContainer = document.getElementById('modalLogContainer');
+            const logText = document.getElementById('modalLogText');
+            if (proj.plog) {
+                logContainer.style.display = 'block';
+                logText.textContent = proj.plog;
+            } else {
+                logContainer.style.display = 'none';
+            }
+
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+            // Render reviews
+            const reviewsList = document.getElementById('modalReviewsList');
+            if (!proj.reviews || !proj.reviews.length) {
+                reviewsList.innerHTML = '<p style="color: #627d98; font-style: italic; font-size: 14px; text-align: center; padding: 15px;">No structural reviews posted yet.</p>';
+            } else {
+                reviewsList.innerHTML = proj.reviews.map(rev => `
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong style="color: #0f766e; font-size: 13px;"><i class="fa-solid fa-user-circle" style="margin-right: 6px;"></i>${rev.reviewer_name}</strong>
+                        <span style="font-size: 11px; color: #94a3b8;">${rev.date_time}</span>
+                    </div>
+                    <p style="font-size: 13.5px; color: #334155; line-height: 1.4;">${rev.review_text}</p>
+                </div>
+                `).join('');
+            }
+
+            // Show/hide review submission
+            if (currentUser) {
+                document.getElementById('addReviewFormContainer').style.display = 'block';
+                document.getElementById('loginToReviewMessage').style.display = 'none';
+            } else {
+                document.getElementById('addReviewFormContainer').style.display = 'none';
+                document.getElementById('loginToReviewMessage').style.display = 'block';
+            }
+
+            projectModal.classList.add('active');
+        }
+
+        // Close details modal
+        closeModalBtn.addEventListener('click', () => {
+            projectModal.classList.remove('active');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === projectModal) {
+                projectModal.classList.remove('active');
+            }
+        });
+
+        // Add Review Form Submission
+        document.getElementById('addReviewForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const textInput = document.getElementById('newReviewText');
+            const reviewText = textInput.value.trim();
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+            if (!currentUser || !reviewText || !activeProjectId) return;
+
+            fetch(`/api/project/${activeProjectId}/add_review`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: currentUser.id,
+                    review_text: reviewText
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    textInput.value = '';
+                    openProjectDetails(activeProjectId); // reload reviews
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => console.error(err));
+        });
+
+        // Trigger dynamic Upload to Image Classification DDL Model
+        crackImage.addEventListener('change', () => {
+            const file = crackImage.files[0];
+            uploadStatus.textContent = file ? `"${file.name}" ready to analyze.` : '';
+        });
+
+        uploadForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            if (!crackImage.files.length) {
+                uploadStatus.textContent = 'Please choose an image first.';
+                return;
+            }
+
+            uploadStatus.textContent = 'Analyzing concrete surface...';
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const userid = currentUser ? currentUser.id : 2; // guest user maps to default user id 2
+
+            const formData = new FormData();
+            formData.append('crackImage', crackImage.files[0]);
+            formData.append('userid', userid);
+
+            fetch('/api/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    uploadStatus.textContent = 'Analysis complete!';
+                    
+                    // Render dynamically into Report Card
+                    const pred = data.prediction;
+                    document.getElementById('analysisImagePreview').src = pred.orginal_image;
+                    document.getElementById('analysisResult').textContent = pred.pred_result;
+                    document.getElementById('analysisConfidence').textContent = `${Math.round(pred.confidence * 100)}%`;
+                    document.getElementById('analysisDepth').textContent = pred.avg_depths;
+
+                    // Color code results
+                    const resultEl = document.getElementById('analysisResult');
+                    const overlayEl = document.getElementById('crackOverlay');
+                    if (pred.pred_result === 'Crack Detected') {
+                        resultEl.style.color = '#ef4444';
+                        overlayEl.style.display = 'block'; // render mock crack highlights overlay
+                    } else {
+                        resultEl.style.color = '#10b981';
+                        overlayEl.style.display = 'none';
+                    }
+
+                    // Display Report Card beautifully
+                    document.getElementById('analysisReportCard').style.display = 'block';
+                } else {
+                    uploadStatus.textContent = data.message;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                uploadStatus.textContent = 'Verification error occurred.';
+            });
+        });
+
+        // Run navbar states initially
+        if (typeof updateLoginState === 'function') {
+            updateLoginState();
+        }
+        loadProjects();
+    </script>
+</body>
+</html>
