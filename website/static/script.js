@@ -9,24 +9,32 @@ function updateLoginState() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
     const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin') || 'null');
 
+    const pathLower = window.location.pathname.toLowerCase();
+    const isEngineerPage = pathLower.endsWith('engineer.html');
+    const isAdminPage = pathLower.endsWith('admin.html');
+    const isUserPage = pathLower.endsWith('user.html');
+
     // 1. Admin is logged in
     if (currentAdmin && currentAdmin.role === 'admin') {
+        const activeClass = isAdminPage ? 'active' : '';
         navActions.innerHTML = `
-            <a class="nav-button" href="admin.html">Admin Dashboard</a>
+            <a class="nav-button ${activeClass}" href="admin.html">Admin Dashboard</a>
             <button type="button" class="nav-button button-link logout-button">Logout</button>
         `;
     } 
     // 2. Engineer is logged in
     else if (currentUser && currentUser.role === 'engineer') {
+        const activeClass = isEngineerPage ? 'active' : '';
         navActions.innerHTML = `
-            <a class="nav-button" href="engineer.html">Engineer Dashboard</a>
+            <a class="nav-button ${activeClass}" href="engineer.html">Engineer Dashboard</a>
             <button type="button" class="nav-button button-link logout-button">Logout</button>
         `;
     } 
     // 3. Normal User is logged in
     else if (currentUser) {
+        const activeClass = isUserPage ? 'active' : '';
         navActions.innerHTML = `
-            <a class="nav-button" href="user.html">User Dashboard</a>
+            <a class="nav-button ${activeClass}" href="user.html">User Dashboard</a>
             <button type="button" class="nav-button button-link logout-button">Logout</button>
         `;
     } 

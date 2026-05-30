@@ -1,9 +1,24 @@
-from flask import Flask, json, render_template, request, redirect, url_for, g
-import sqlite3 as sql 
+from flask import Flask, json, render_template, request, redirect, session, g, url_for
+import sqlite3
+import sqlite3 as sql
 import os
 import random
 from datetime import datetime
+import uuid
 from werkzeug.utils import secure_filename
+import matplotlib.pyplot as plt
+from PIL import Image
+import numpy as np
+from tqdm import tqdm  # progress bar add lines to app.py only if not added
+
+try:
+    import torch
+    import torch.nn as nn
+    import torch.optim as optim
+    from torch.utils.data import Dataset, DataLoader
+    import torchvision.transforms as transforms
+except ModuleNotFoundError:
+    print("Warning: PyTorch and Torchvision are not fully installed in this environment. Deep learning modules will be inactive.")
 
 app = Flask(__name__)
 app.secret_key = "crackvision"
@@ -80,7 +95,8 @@ def init_db():
         poverview TEXT,
         plog TEXT,
         status TEXT,
-        img TEXT
+        img TEXT,
+        engineer_id INTEGER
     )
     """)
 
@@ -112,29 +128,29 @@ def init_db():
     if not cursor.fetchone():
         cursor.execute("""
             INSERT INTO users (username, password, role, name, dob, email, contact, address, gender, img)
-            VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, 'static/default_profile.png')
+            VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, 'static/default_profile.svg')
         """, ('admin', 'admin123', 'System Admin', '1985-01-01', 'admin@company.com', '0000000000', 'Admin Office', 'Male'))
 
     cursor.execute("SELECT * FROM users WHERE username = 'user'")
     if not cursor.fetchone():
         cursor.execute("""
             INSERT INTO users (username, password, role, name, dob, email, contact, address, gender, img)
-            VALUES (?, ?, 2, ?, ?, ?, ?, ?, ?, 'static/default_profile.png')
-        """, ('user', 'user123', 'Demo User', '1998-05-15', 'user@company.com', '9876500000', 'User Street', 'Male'))
+            VALUES (?, ?, 2, ?, ?, ?, ?, ?, ?, 'static/default_profile.svg')
+        """, ('user', 'user123', 'User', '1998-05-15', 'user@company.com', '9876500000', 'User Street', 'Male'))
 
     cursor.execute("SELECT * FROM users WHERE username = 'engineer'")
     if not cursor.fetchone():
         cursor.execute("""
             INSERT INTO users (username, password, role, name, dob, email, contact, address, gender, img)
-            VALUES (?, ?, 3, ?, ?, ?, ?, ?, ?, 'static/default_profile.png')
-        """, ('engineer', 'engineer123', 'Demo Engineer', '1992-10-20', 'engineer@company.com', '9876543210', 'Engineer Lab', 'Male'))
+            VALUES (?, ?, 3, ?, ?, ?, ?, ?, ?, 'static/default_profile.svg')
+        """, ('engineer', 'engineer123', 'Engineer', '1992-10-20', 'engineer@company.com', '9876543210', 'Engineer Lab', 'Male'))
 
     # Seed default construction projects
     cursor.execute("SELECT COUNT(*) FROM projects")
     if cursor.fetchone()[0] == 0:
         cursor.execute("""
-            INSERT INTO projects (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, poverview, plog, status, img)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO projects (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, poverview, plog, status, img, engineer_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             'Commercial Complex',
             'NetSoft Business Tower',
@@ -152,12 +168,13 @@ def init_db():
             'The NetSoft Business Tower is a flagship corporate commercial development designed to meet the highest safety, efficiency, and engineering standards. Featuring state-of-the-art facilities, seismic protection systems, and automated surface scanning sensor slots, it is engineered for extreme durability.',
             'Initial corporate complex site log detailing pile foundation safety and concrete grade scanning details.',
             'Ongoing',
-            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=70'
+            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=70',
+            3
         ))
 
         cursor.execute("""
-            INSERT INTO projects (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, poverview, plog, status, img)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO projects (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, poverview, plog, status, img, engineer_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             'Residential Building',
             'Green Valley Apartments',
@@ -175,12 +192,13 @@ def init_db():
             'Green Valley Apartments is a high-density, eco-friendly luxury residential housing complex. Built with structural safety as the highest priority, the buildings are monitored with real-time inspection cameras and utilize highly durable low-shrinkage self-consolidating concrete.',
             'Residential building logs indicating complete raft foundation settlement checks and concrete casing scans.',
             'Completed',
-            'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=70'
+            'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=70',
+            3
         ))
 
         cursor.execute("""
-            INSERT INTO projects (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, poverview, plog, status, img)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO projects (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, poverview, plog, status, img, engineer_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             'Structural Repair',
             'Concrete Surface Restoration',
@@ -198,7 +216,8 @@ def init_db():
             'This project targets critical rehabilitation of a heavy-traffic highway bridge surface and under-girders. The execution details involve removing degraded concrete layers, injecting epoxy micro-fillers into detected crack paths, and applying a robust protective fiber polymer overlay.',
             'Infrastructure restoration log tracking slab crack epoxies injections and overlay curing monitoring.',
             'Upcoming',
-            'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=600&q=70'
+            'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=600&q=70',
+            3
         ))
 
     # Migration: Force-upgrade pre-existing database project images to optimized Unsplash URLs
@@ -224,6 +243,11 @@ def init_db():
             INSERT INTO reviews (project_id, user_id, review_text, date_time)
             VALUES (?, ?, ?, ?)
         """, (2, 2, 'The foundation work was completed precisely on schedule. The finishes are very durable and look clean.', '2025-04-10 11:15:00'))
+
+    # Migration: Upgrade any pre-existing user avatars from PNG to SVG
+    cursor.execute("UPDATE users SET img = 'static/default_profile.svg' WHERE img = 'static/default_profile.png'")
+    cursor.execute("UPDATE users SET name = 'User' WHERE name = 'Demo User'")
+    cursor.execute("UPDATE users SET name = 'Engineer' WHERE name = 'Demo Engineer'")
 
     conn.commit()
     conn.close()
@@ -256,7 +280,7 @@ def register_db():
         try:
             cur.execute("""
                 INSERT INTO users (username, password, role, name, dob, email, contact, address, gender, img)
-                VALUES (?, ?, 2, ?, ?, ?, ?, ?, ?, 'static/default_profile.png')
+                VALUES (?, ?, 2, ?, ?, ?, ?, ?, ?, 'static/default_profile.svg')
             """, (username, password, name, dob, email, phone, address, gender))
             con.commit()
             return redirect("/login.html")
@@ -321,6 +345,7 @@ def login_db():
             "role": legacy_role,
             "role_id": user['role'],
             "status": "approved",
+            "img": "/" + user['img'].replace("\\", "/") if user['img'] else '/static/default_profile.svg',
             "employeeId": f"ENG-00{user['id']}" if user['role'] == 3 else None,
             "department": "Structural Inspection" if user['role'] == 3 else None,
             "designation": "Site Engineer" if user['role'] == 3 else None
@@ -341,6 +366,7 @@ def get_engineers():
         engineers = []
         for row in rows:
             engineers.append({
+                "id": row["id"],
                 "name": row["name"],
                 "username": row["username"],
                 "email": row["email"],
@@ -385,7 +411,7 @@ def add_engineer():
             
         cur.execute("""
             INSERT INTO users (username, password, role, name, dob, email, contact, address, gender, img)
-            VALUES (?, ?, 3, ?, ?, ?, ?, ?, ?, 'static/default_profile.png')
+            VALUES (?, ?, 3, ?, ?, ?, ?, ?, ?, 'static/default_profile.svg')
         """, (username, password, name, dob, email, phone, address, gender))
         con.commit()
             
@@ -433,6 +459,11 @@ def add_project():
         sdesc = request.form.get('sdesc', '').strip()
         plog = request.form.get('plog', '').strip()
         status = request.form.get('status', 'Ongoing').strip()
+        engineer_id = request.form.get('engineer_id')
+        if engineer_id:
+            engineer_id = int(engineer_id)
+        else:
+            engineer_id = None
         
         # Determine fallback picture based on category
         if 'Commercial' in pcat:
@@ -457,9 +488,9 @@ def add_project():
         con = get_db()
         cur = con.cursor()
         cur.execute("""
-            INSERT INTO projects (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, poverview, plog, status, img)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, plog, plog, status, img_url))
+            INSERT INTO projects (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, poverview, plog, status, img, engineer_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (pcat, pname, ptype, duration, area, client, location, bheight, ftype, fmaterial, pspace, erate, sdesc, plog, plog, status, img_url, engineer_id))
         con.commit()
             
         return json.dumps({"status": "success", "message": "Project added successfully."}), 200, {'Content-Type': 'application/json'}
@@ -490,10 +521,25 @@ def delete_project():
 @app.route("/api/projects", methods=['GET'])
 def api_projects():
     try:
+        engineer_id = request.args.get('engineer_id')
         con = get_db()
         con.row_factory = sql.Row
         cur = con.cursor()
-        cur.execute("SELECT * FROM projects")
+        
+        if engineer_id:
+            cur.execute("""
+                SELECT p.*, u.name as engineer_name 
+                FROM projects p
+                LEFT JOIN users u ON p.engineer_id = u.id
+                WHERE p.engineer_id = ?
+            """, (engineer_id,))
+        else:
+            cur.execute("""
+                SELECT p.*, u.name as engineer_name 
+                FROM projects p
+                LEFT JOIN users u ON p.engineer_id = u.id
+            """)
+            
         rows = cur.fetchall()
         projects = [dict(row) for row in rows]
         return json.dumps(projects), 200, {'Content-Type': 'application/json'}
@@ -508,7 +554,12 @@ def api_project_detail(project_id):
         con.row_factory = sql.Row
         cur = con.cursor()
         
-        cur.execute("SELECT * FROM projects WHERE id = ?", (project_id,))
+        cur.execute("""
+            SELECT p.*, u.name as engineer_name 
+            FROM projects p
+            LEFT JOIN users u ON p.engineer_id = u.id
+            WHERE p.id = ?
+        """, (project_id,))
         project_row = cur.fetchone()
         if not project_row:
             return json.dumps({"status": "error", "message": "Project not found."}), 404, {'Content-Type': 'application/json'}
@@ -667,6 +718,161 @@ def api_user_reviews():
         """, (user_id,))
         reviews = [dict(row) for row in cur.fetchall()]
         return json.dumps(reviews), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return json.dumps({"status": "error", "message": str(e)}), 500, {'Content-Type': 'application/json'}
+
+@app.route("/api/user/update_details", methods=['POST'])
+def api_update_details():
+    try:
+        data = request.get_json()
+        if not data:
+            return json.dumps({"status": "error", "message": "Missing update data."}), 400, {'Content-Type': 'application/json'}
+            
+        user_id = data.get('user_id')
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        phone = data.get('phone', '').strip()
+        dob = data.get('dob', '').strip()
+        gender = data.get('gender', '').strip()
+        address = data.get('address', '').strip()
+        
+        if not user_id or not name or not email or not phone:
+            return json.dumps({"status": "error", "message": "Name, email, and phone are required."}), 400, {'Content-Type': 'application/json'}
+            
+        con = get_db()
+        cur = con.cursor()
+        cur.execute("""
+            UPDATE users 
+            SET name = ?, email = ?, contact = ?, dob = ?, gender = ?, address = ?
+            WHERE id = ?
+        """, (name, email, phone, dob, gender, address, user_id))
+        con.commit()
+        
+        # Fetch updated user details to return
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        user = cur.fetchone()
+        
+        if not user:
+            return json.dumps({"status": "error", "message": "User not found."}), 404, {'Content-Type': 'application/json'}
+            
+        legacy_role = 'user'
+        if user['role'] == 1:
+            legacy_role = 'admin'
+        elif user['role'] == 3:
+            legacy_role = 'engineer'
+            
+        user_data = {
+            "id": user['id'],
+            "username": user['username'],
+            "name": user['name'],
+            "email": user['email'],
+            "phone": user['contact'],
+            "dob": user['dob'],
+            "gender": user['gender'],
+            "address": user['address'],
+            "role": legacy_role,
+            "role_id": user['role'],
+            "img": "/" + user['img'].replace("\\", "/") if user['img'] else '/static/default_profile.svg',
+            "employeeId": f"ENG-00{user['id']}" if user['role'] == 3 else None,
+            "department": "Structural Inspection" if user['role'] == 3 else None,
+            "designation": "Site Engineer" if user['role'] == 3 else None
+        }
+        
+        return json.dumps({"status": "success", "user": user_data}), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return json.dumps({"status": "error", "message": str(e)}), 500, {'Content-Type': 'application/json'}
+
+@app.route("/api/user/update_password", methods=['POST'])
+def api_update_password():
+    try:
+        data = request.get_json()
+        if not data:
+            return json.dumps({"status": "error", "message": "Missing credential details."}), 400, {'Content-Type': 'application/json'}
+            
+        user_id = data.get('user_id')
+        existing_password = data.get('existing_password')
+        new_password = data.get('new_password')
+        
+        if not user_id or not existing_password or not new_password:
+            return json.dumps({"status": "error", "message": "All password fields are required."}), 400, {'Content-Type': 'application/json'}
+            
+        con = get_db()
+        cur = con.cursor()
+        cur.execute("SELECT password FROM users WHERE id = ?", (user_id,))
+        row = cur.fetchone()
+        
+        if not row:
+            return json.dumps({"status": "error", "message": "User not found."}), 404, {'Content-Type': 'application/json'}
+            
+        stored_password = row[0]
+        if stored_password != existing_password:
+            return json.dumps({"status": "error", "message": "Incorrect existing password."}), 401, {'Content-Type': 'application/json'}
+            
+        cur.execute("UPDATE users SET password = ? WHERE id = ?", (new_password, user_id))
+        con.commit()
+        
+        return json.dumps({"status": "success", "message": "Password updated successfully."}), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return json.dumps({"status": "error", "message": str(e)}), 500, {'Content-Type': 'application/json'}
+
+@app.route("/api/user/update_picture", methods=['POST'])
+def api_update_picture():
+    try:
+        user_id = request.form.get('user_id')
+        if 'profilePicture' not in request.files:
+            return json.dumps({"status": "error", "message": "No picture uploaded."}), 400, {'Content-Type': 'application/json'}
+            
+        file = request.files['profilePicture']
+        if file.filename == '':
+            return json.dumps({"status": "error", "message": "No selected file."}), 400, {'Content-Type': 'application/json'}
+            
+        if file:
+            filename = secure_filename(file.filename)
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            unique_filename = f"avatar_{timestamp}_{filename}"
+            filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
+            absolute_filepath = os.path.join('d:/internship netsoft/python/website', filepath)
+            file.save(absolute_filepath)
+            
+            img_url = filepath
+            
+            con = get_db()
+            cur = con.cursor()
+            cur.execute("UPDATE users SET img = ? WHERE id = ?", (img_url, user_id))
+            con.commit()
+            
+            # Fetch updated user details
+            con.row_factory = sql.Row
+            cur = con.cursor()
+            cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+            user = cur.fetchone()
+            
+            legacy_role = 'user'
+            if user['role'] == 1:
+                legacy_role = 'admin'
+            elif user['role'] == 3:
+                legacy_role = 'engineer'
+                
+            user_data = {
+                "id": user['id'],
+                "username": user['username'],
+                "name": user['name'],
+                "email": user['email'],
+                "phone": user['contact'],
+                "dob": user['dob'],
+                "gender": user['gender'],
+                "address": user['address'],
+                "role": legacy_role,
+                "role_id": user['role'],
+                "img": "/" + filepath.replace("\\", "/"),
+                "employeeId": f"ENG-00{user['id']}" if user['role'] == 3 else None,
+                "department": "Structural Inspection" if user['role'] == 3 else None,
+                "designation": "Site Engineer" if user['role'] == 3 else None
+            }
+            
+            return json.dumps({"status": "success", "user": user_data}), 200, {'Content-Type': 'application/json'}
     except Exception as e:
         return json.dumps({"status": "error", "message": str(e)}), 500, {'Content-Type': 'application/json'}
 

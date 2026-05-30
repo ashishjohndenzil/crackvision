@@ -18,8 +18,9 @@
         <nav aria-label="Main navigation">
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
                 <li><a href="index.html#projects">Projects</a></li>
-                <li><a class="active" href="user.html">User Dashboard</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
                 <li class="nav-actions" id="navActions">
                     <button type="button" class="nav-button button-link logout-button">Logout</button>
                 </li>
@@ -60,6 +61,19 @@
                     <h2 style="border-bottom: 2px solid #eef6f5; padding-bottom: 8px; margin-bottom: 15px;">
                         <i class="fa-solid fa-id-card" style="margin-right: 8px; color: #0f766e;"></i>My Profile Details
                     </h2>
+                    
+                    <!-- Dynamic Avatar Display and Uploader -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <div style="position: relative; width: 100px; height: 100px; border-radius: 50%; overflow: hidden; border: 3px solid #0f766e; background: #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            <img id="profileAvatar" style="width: 100%; height: 100%; object-fit: cover;" src="/static/default_profile.svg" alt="Profile Picture">
+                        </div>
+                        <label for="avatarUploader" class="avatar-upload-label">
+                            <i class="fa-solid fa-camera"></i> Change Photo
+                        </label>
+                        <input type="file" id="avatarUploader" accept="image/*" style="display: none;">
+                        <p id="uploadMessage" style="font-size: 11.5px; margin: 0; text-align: center; color: #627d98; min-height: 15px;"></p>
+                    </div>
+
                     <dl class="engineer-details" style="grid-template-columns: 1fr; gap: 14px;">
                         <div>
                             <dt style="color: #627d98; font-size: 13px; font-weight: 700;">Full Name</dt>
@@ -90,6 +104,11 @@
                             <dd id="profileAddress" style="color: #102a43; font-weight: 700; font-size: 14.5px; line-height: 1.4;"></dd>
                         </div>
                     </dl>
+
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                        <button type="button" class="primary-button full-width" id="btnEditProfile" style="margin-top: 0; min-height: 38px; font-size: 13.5px;"><i class="fa-solid fa-user-pen" style="margin-right: 8px;"></i>Edit Details</button>
+                        <button type="button" class="secondary-button full-width" id="btnChangePassword" style="margin-top: 0; min-height: 38px; font-size: 13.5px; border-color: #bcccdc; color: #475569;"><i class="fa-solid fa-key" style="margin-right: 8px;"></i>Change Password</button>
+                    </div>
                 </section>
 
                 <!-- Tabs Area (Inspections & Reviews) -->
@@ -142,8 +161,159 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Glassmorphic Edit Details Modal -->
+    <div id="editDetailsModal" class="project-modal" style="display: none; position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease;">
+        <div class="auth-card" style="width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.98); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); padding: 30px; animation: slideIn 0.3s ease;">
+            <button type="button" class="closeEditDetailsBtn" style="position: absolute; right: 20px; top: 20px; background: transparent; border: none; font-size: 24px; cursor: pointer; color: #627d98;">&times;</button>
+            <h2 style="color: #102a43; font-size: 22px; margin-bottom: 20px; border-bottom: 2px solid #eef6f5; padding-bottom: 8px; font-weight: 700;">
+                <i class="fa-solid fa-user-pen" style="margin-right: 8px; color: #0f766e;"></i>Edit Profile Details
+            </h2>
+            <form id="editProfileForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="form-field">
+                    <label for="editName" style="font-weight: 700; font-size: 13px; color: #475569;">Full Name</label>
+                    <input type="text" id="editName" required placeholder="Enter your full name" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;">
+                </div>
+                <div class="form-field">
+                    <label for="editEmail" style="font-weight: 700; font-size: 13px; color: #475569;">Email Address</label>
+                    <input type="email" id="editEmail" required placeholder="Enter email address" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;">
+                </div>
+                <div class="form-field">
+                    <label for="editPhone" style="font-weight: 700; font-size: 13px; color: #475569;">Contact Phone</label>
+                    <input type="tel" id="editPhone" required placeholder="Enter phone number" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;">
+                </div>
+                <div class="form-field">
+                    <label for="editDob" style="font-weight: 700; font-size: 13px; color: #475569;">Date of Birth</label>
+                    <input type="date" id="editDob" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;">
+                </div>
+                <div class="form-field">
+                    <label for="editGender" style="font-weight: 700; font-size: 13px; color: #475569;">Gender</label>
+                    <select id="editGender" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label for="editAddress" style="font-weight: 700; font-size: 13px; color: #475569;">Residential Address</label>
+                    <textarea id="editAddress" rows="3" placeholder="Enter residential address" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px; resize: vertical;"></textarea>
+                </div>
+                <p id="editDetailsMessage" style="font-size: 13px; font-weight: 700; text-align: center; color: #ef4444; margin: 0; min-height: 18px;"></p>
+                <button type="submit" class="primary-button" style="margin-top: 10px; min-height: 40px; font-size: 14.5px;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Glassmorphic Change Password Modal -->
+    <div id="changePasswordModal" class="project-modal" style="display: none; position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease;">
+        <div class="auth-card" style="width: 90%; max-width: 450px; position: relative; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.98); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); padding: 30px; animation: slideIn 0.3s ease;">
+            <button type="button" class="closeChangePasswordBtn" style="position: absolute; right: 20px; top: 20px; background: transparent; border: none; font-size: 24px; cursor: pointer; color: #627d98;">&times;</button>
+            <h2 style="color: #102a43; font-size: 22px; margin-bottom: 20px; border-bottom: 2px solid #eef6f5; padding-bottom: 8px; font-weight: 700;">
+                <i class="fa-solid fa-key" style="margin-right: 8px; color: #0f766e;"></i>Change Password
+            </h2>
+            <form id="changePasswordForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="form-field">
+                    <label for="existingPassword" style="font-weight: 700; font-size: 13px; color: #475569;">Existing Password</label>
+                    <input type="password" id="existingPassword" required placeholder="Enter current password" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;">
+                </div>
+                <div class="form-field">
+                    <label for="newPassword" style="font-weight: 700; font-size: 13px; color: #475569;">New Password</label>
+                    <input type="password" id="newPassword" required placeholder="Enter new password (min 6 chars)" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;">
+                </div>
+                <div class="form-field">
+                    <label for="confirmPassword" style="font-weight: 700; font-size: 13px; color: #475569;">Confirm Password</label>
+                    <input type="password" id="confirmPassword" required placeholder="Retype new password" style="width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px;">
+                </div>
+                <p id="changePasswordMessage" style="font-size: 13px; font-weight: 700; text-align: center; color: #ef4444; margin: 0; min-height: 18px;"></p>
+                <button type="submit" class="primary-button" style="margin-top: 10px; min-height: 40px; font-size: 14.5px;">Update Password</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Extra dynamic styling inside stylesheet block -->
+    <style>
+        .project-modal {
+            display: none !important;
+        }
+        .project-modal.active {
+            display: flex !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Profile Details Spacing and Alignment Polish */
+        .engineer-details {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .admin-panel .engineer-details div {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+        .admin-panel .engineer-details div:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .engineer-details dt {
+            color: #627d98;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0;
+        }
+        .engineer-details dd {
+            color: #102a43;
+            font-weight: 700;
+            font-size: 14.5px;
+            margin: 0 !important;
+            line-height: 1.4;
+        }
+
+        /* Avatar Chooser Hover zooms */
+        .avatar-upload-label {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #ccfbf1;
+            color: #0b5f59;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12.5px;
+            border: 1px solid #9ad6cf;
+            transition: all 0.2s ease-in-out;
+        }
+        .avatar-upload-label:hover {
+            background: #0f766e;
+            color: #ffffff;
+            border-color: #0f766e;
+            transform: scale(1.03);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Close Cross Micro-rotations */
+        .closeEditDetailsBtn, .closeChangePasswordBtn {
+            transition: all 0.2s ease !important;
+        }
+        .closeEditDetailsBtn:hover, .closeChangePasswordBtn:hover {
+            color: #ef4444 !important;
+            transform: rotate(90deg) scale(1.1);
+        }
+    </style>
+
     <script>
-        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
 
         // Protect route: Redirect to login if user role isn't 'user'
         if (!currentUser || currentUser.role !== 'user') {
@@ -151,14 +321,18 @@
         }
 
         // Render profile variables
-        document.getElementById('userDashboardName').textContent = `${currentUser.name} Workspace`;
-        document.getElementById('profileName').textContent = currentUser.name || 'N/A';
-        document.getElementById('profileUsername').textContent = currentUser.username || 'N/A';
-        document.getElementById('profileEmail').textContent = currentUser.email || 'N/A';
-        document.getElementById('profilePhone').textContent = currentUser.phone || 'N/A';
-        document.getElementById('profileDob').textContent = currentUser.dob || 'N/A';
-        document.getElementById('profileGender').textContent = currentUser.gender || 'N/A';
-        document.getElementById('profileAddress').textContent = currentUser.address || 'N/A';
+        function renderProfile() {
+            if (!currentUser) return;
+            document.getElementById('userDashboardName').textContent = `${currentUser.name} Workspace`;
+            document.getElementById('profileAvatar').src = currentUser.img ? currentUser.img : '/static/default_profile.svg';
+            document.getElementById('profileName').textContent = currentUser.name || 'N/A';
+            document.getElementById('profileUsername').textContent = currentUser.username || 'N/A';
+            document.getElementById('profileEmail').textContent = currentUser.email || 'N/A';
+            document.getElementById('profilePhone').textContent = currentUser.phone || 'N/A';
+            document.getElementById('profileDob').textContent = currentUser.dob || 'N/A';
+            document.getElementById('profileGender').textContent = currentUser.gender || 'N/A';
+            document.getElementById('profileAddress').textContent = currentUser.address || 'N/A';
+        }
 
         const userReviewsList = document.getElementById('userReviewsList');
         const userInspectionsTable = document.getElementById('userInspectionsTable');
@@ -228,9 +402,235 @@
             });
         }
 
+        // PROFILE MANAGEMENT JAVASCRIPT CONTROLLERS
+        const avatarUploader = document.getElementById('avatarUploader');
+        const uploadMessage = document.getElementById('uploadMessage');
+        const profileAvatar = document.getElementById('profileAvatar');
+
+        const editDetailsModal = document.getElementById('editDetailsModal');
+        const changePasswordModal = document.getElementById('changePasswordModal');
+
+        const btnEditProfile = document.getElementById('btnEditProfile');
+        const btnChangePassword = document.getElementById('btnChangePassword');
+
+        const closeEditDetailsBtn = document.querySelector('.closeEditDetailsBtn');
+        const closeChangePasswordBtn = document.querySelector('.closeChangePasswordBtn');
+
+        const editProfileForm = document.getElementById('editProfileForm');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+
+        const editDetailsMessage = document.getElementById('editDetailsMessage');
+        const changePasswordMessage = document.getElementById('changePasswordMessage');
+
+        // Handle Avatar File Upload Change
+        if (avatarUploader) {
+            avatarUploader.addEventListener('change', () => {
+                if (!avatarUploader.files.length) return;
+                
+                uploadMessage.style.color = '#0f766e';
+                uploadMessage.textContent = 'Uploading picture...';
+
+                const formData = new FormData();
+                formData.append('profilePicture', avatarUploader.files[0]);
+                formData.append('user_id', currentUser.id);
+
+                fetch('/api/user/update_picture', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        currentUser = data.user;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        renderProfile();
+                        uploadMessage.style.color = '#10b981';
+                        uploadMessage.textContent = 'Photo updated successfully!';
+                        
+                        Swal.fire({
+                            title: 'Updated!',
+                            text: 'Your profile picture has been updated.',
+                            icon: 'success',
+                            confirmButtonColor: '#0f766e'
+                        });
+
+                        setTimeout(() => {
+                            uploadMessage.textContent = '';
+                        }, 4000);
+                    } else {
+                        uploadMessage.style.color = '#ef4444';
+                        uploadMessage.textContent = data.message || 'Upload failed.';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    uploadMessage.style.color = '#ef4444';
+                    uploadMessage.textContent = 'Connection error.';
+                });
+            });
+        }
+
+        // Open Edit Profile Modal
+        if (btnEditProfile) {
+            btnEditProfile.addEventListener('click', () => {
+                document.getElementById('editName').value = currentUser.name || '';
+                document.getElementById('editEmail').value = currentUser.email || '';
+                document.getElementById('editPhone').value = currentUser.phone || '';
+                document.getElementById('editDob').value = currentUser.dob || '';
+                document.getElementById('editGender').value = currentUser.gender || 'Male';
+                document.getElementById('editAddress').value = currentUser.address || '';
+                
+                editDetailsMessage.textContent = '';
+                editDetailsModal.classList.add('active');
+            });
+        }
+
+        // Close Edit Profile Modal
+        if (closeEditDetailsBtn) {
+            closeEditDetailsBtn.addEventListener('click', () => {
+                editDetailsModal.classList.remove('active');
+            });
+        }
+
+        // Open Change Password Modal
+        if (btnChangePassword) {
+            btnChangePassword.addEventListener('click', () => {
+                changePasswordForm.reset();
+                changePasswordMessage.textContent = '';
+                changePasswordModal.classList.add('active');
+            });
+        }
+
+        // Close Change Password Modal
+        if (closeChangePasswordBtn) {
+            closeChangePasswordBtn.addEventListener('click', () => {
+                changePasswordModal.classList.remove('active');
+            });
+        }
+
+        // Close Modals on Outer Click
+        window.addEventListener('click', (e) => {
+            if (e.target === editDetailsModal) {
+                editDetailsModal.classList.remove('active');
+            }
+            if (e.target === changePasswordModal) {
+                changePasswordModal.classList.remove('active');
+            }
+        });
+
+        // Handle Edit Profile Form Submit
+        if (editProfileForm) {
+            editProfileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                editDetailsMessage.style.color = '#0f766e';
+                editDetailsMessage.textContent = 'Saving changes...';
+
+                const payload = {
+                    user_id: currentUser.id,
+                    name: document.getElementById('editName').value.trim(),
+                    email: document.getElementById('editEmail').value.trim(),
+                    phone: document.getElementById('editPhone').value.trim(),
+                    dob: document.getElementById('editDob').value,
+                    gender: document.getElementById('editGender').value,
+                    address: document.getElementById('editAddress').value.trim()
+                };
+
+                fetch('/api/user/update_details', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        currentUser = data.user;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        renderProfile();
+                        editDetailsModal.classList.remove('active');
+                        
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Profile details updated successfully.',
+                            icon: 'success',
+                            confirmButtonColor: '#0f766e'
+                        });
+                    } else {
+                        editDetailsMessage.style.color = '#ef4444';
+                        editDetailsMessage.textContent = data.message || 'Failed to update details.';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    editDetailsMessage.style.color = '#ef4444';
+                    editDetailsMessage.textContent = 'Connection error.';
+                });
+            });
+        }
+
+        // Handle Change Password Form Submit
+        if (changePasswordForm) {
+            changePasswordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const existingPwd = document.getElementById('existingPassword').value;
+                const newPwd = document.getElementById('newPassword').value;
+                const confirmPwd = document.getElementById('confirmPassword').value;
+
+                if (newPwd.length < 6) {
+                    changePasswordMessage.style.color = '#ef4444';
+                    changePasswordMessage.textContent = 'New password must be at least 6 characters.';
+                    return;
+                }
+
+                if (newPwd !== confirmPwd) {
+                    changePasswordMessage.style.color = '#ef4444';
+                    changePasswordMessage.textContent = 'Passwords do not match.';
+                    return;
+                }
+
+                changePasswordMessage.style.color = '#0f766e';
+                changePasswordMessage.textContent = 'Updating password...';
+
+                const payload = {
+                    user_id: currentUser.id,
+                    existing_password: existingPwd,
+                    new_password: newPwd
+                };
+
+                fetch('/api/user/update_password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        changePasswordForm.reset();
+                        changePasswordModal.classList.remove('active');
+                        
+                        Swal.fire({
+                            title: 'Updated!',
+                            text: 'Your password has been changed successfully.',
+                            icon: 'success',
+                            confirmButtonColor: '#0f766e'
+                        });
+                    } else {
+                        changePasswordMessage.style.color = '#ef4444';
+                        changePasswordMessage.textContent = data.message || 'Failed to update password.';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    changePasswordMessage.style.color = '#ef4444';
+                    changePasswordMessage.textContent = 'Connection error.';
+                });
+            });
+        }
+
         if (typeof updateLoginState === 'function') {
             updateLoginState();
         }
+        renderProfile();
         loadUserDashboard();
     </script>
 </body>

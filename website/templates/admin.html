@@ -33,8 +33,9 @@
         <nav aria-label="Main navigation">
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
                 <li><a href="index.html#projects">Projects</a></li>
-                <li><a class="active" href="admin.html">Admin Dashboard</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
                 <li class="nav-actions" id="navActions">
                     <button type="button" class="nav-button button-link" id="topAdminLogoutBtn">Logout</button>
                 </li>
@@ -215,6 +216,14 @@
                             </select>
                         </div>
 
+                        <div class="form-field">
+                            <label for="projectEngineer">Assigned Site Engineer</label>
+                            <select id="projectEngineer" required>
+                                <option value="">Select site engineer</option>
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+
                         <div class="form-field wide-field">
                             <label for="projectImage">Project Picture (Optional)</label>
                             <input type="file" id="projectImage" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #bcccdc; border-radius: 8px;">
@@ -299,6 +308,7 @@
         const projectMessage = document.getElementById('projectMessage');
         const projectsTableBody = document.getElementById('projectsTableBody');
         const projectCount = document.getElementById('projectCount');
+        const projectEngineer = document.getElementById('projectEngineer');
 
         let loadedEngineers = [];
         let loadedProjects = [];
@@ -321,10 +331,18 @@
             .then(data => {
                 loadedEngineers = data;
                 renderEngineers();
+                populateProjectEngineerDropdown();
             })
             .catch(err => {
                 console.error(err);
             });
+        }
+
+        function populateProjectEngineerDropdown() {
+            if (!projectEngineer) return;
+            const engineers = loadedEngineers;
+            projectEngineer.innerHTML = '<option value="">Select site engineer</option>' + 
+                engineers.map(eng => `<option value="${eng.id}">${escapeHtml(eng.name)} (ENG-00${eng.id})</option>`).join('');
         }
 
         function setAdminMessage(element, text, type) {
@@ -610,6 +628,7 @@
                     <td style="padding: 12px; font-size: 12px; color: #334155;">
                         <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
                             <li><strong>Client:</strong> ${client}</li>
+                            <li><strong>Assigned Eng:</strong> <span style="color: #0f766e; font-weight: bold;">${proj.engineer_name || 'Unassigned'}</span></li>
                             <li><strong>Duration:</strong> ${duration}</li>
                             <li><strong>Area:</strong> ${area}</li>
                             <li><strong>Height:</strong> ${bheight}</li>
@@ -650,6 +669,7 @@
             const sdesc = document.getElementById('projectSdesc').value.trim();
             const plog = document.getElementById('projectLog').value.trim();
             const status = document.getElementById('projectStatus').value;
+            const engineer_id = document.getElementById('projectEngineer').value;
             const projectImage = document.getElementById('projectImage').files[0];
             
             setAdminMessage(projectMessage, 'Saving project...', 'info');
@@ -669,6 +689,7 @@
             formData.append('sdesc', sdesc);
             formData.append('plog', plog);
             formData.append('status', status);
+            formData.append('engineer_id', engineer_id);
             if (projectImage) {
                 formData.append('projectImage', projectImage);
             }
